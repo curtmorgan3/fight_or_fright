@@ -10,12 +10,7 @@ is armed with a wooden sword and his wit. Each level of the house is populated w
 to slay. As the hero slays more and more monsters, he gets stronger, faster and smarter. As the hero levels
 up, so too do the monsters he must destroy.
 
-The hero will have stats that determine certain actions:
-  1. Strength will make his attacks deal more damage
-  2. Speed will make him harder for monsters to hit and more likely to go first
-  3. Dexterity will make it easier to hit monsters
-  4. Fortitude will make him harder to kill
-  5. Luck will help him collect better loot
+The hero will have stats that determine certain actions.
 
 The monsters will have their own stats of all the above minus luck (monsters aren't lucky)
 
@@ -87,6 +82,17 @@ On the opponent's turn, it will:
 
 After a floor is cleared, loot is presented to the player on a random basis accounting for player's luck.
 Loot consists of potions and new weapons.
+
+## Rolling a character
+A player's character attributes will be determined by summing a random number 1-10, adding the following
+for class:
+  1. Knight: +2 Strength
+  2. Rogue:  +2 Speed
+  3. Ninja:  +2 Dexterity
+  4. Priest:  +2 Fortitude
+  5. Gambler: +2 Luck
+
+
 
 ## Attributes to Modifier Table
   | Score   |	 Modifier
