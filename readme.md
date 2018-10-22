@@ -149,9 +149,10 @@ For example, to determine a players armor class, add ten to his dexterity modifi
 
 ### Leveling Up
   1. Increment vitality by adding a random number 1-6 to fortitude modifier.
-  2. The player adds a single point to any of his core attributes.
-  3. Experience points are awarded based on the levels of the opponents destroyed
-  4. Experience points required to level up increase exponentially at each level
+  2. The player adds a single point to any of his core attributes -or-
+  3. The player adds two points to the attribute of his class.
+  4. Experience points are awarded based on the levels of the opponents destroyed
+  5. Experience points required to level up increase exponentially at each level
 
   |XP       | Level
   |---------|:--------:
@@ -175,3 +176,18 @@ For example, to determine a players armor class, add ten to his dexterity modifi
   |265,000  |	 18
   |305,000  |	 19
   |355,000  |	 20
+
+### Monsters
+The player is presented with a random combination of five possible monster types:
+  1. Skeleton
+    1. Basic, no additions
+  2. Werewolf
+    3. High dexterity
+  3. Ghost
+    1. High speed
+  4. Zombie
+    1. High strength
+  5. Vampire
+    1. High fortitude
+Monsters are generated at 0-3 levels higher than the player, randomly. Their stats are
+generated in the same way the player's are. 
