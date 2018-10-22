@@ -3,7 +3,7 @@ Wireframe:
   2. https://wireframe.cc/4Ja0ae
   3. https://wireframe.cc/zHqdCd
 
-#H1 Description
+# Description
 
 The user plays a hero on Halloween that must travel through the infinite levels of a haunted house. He
 is armed with a wooden sword and his wit. Each level of the house is populated with monsters for the hero
@@ -32,7 +32,7 @@ Each time the hero levels up, he chooses one stat to make better by one point. T
 restored and he continues to the next floor.
 
 
-#H1 Minimum Viable Product
+# Minimum Viable Product
 
 
 The user has a graphical representation of the player character and opponent character.
@@ -51,7 +51,7 @@ When the player loses all health, the game is over.
 
 
 
-#H1 Functional Specifications
+# Functional Specifications
 
 The user enters a name and is presented with a choice of characters, each with certain stat advantages.
   1. Knight: Higher Strength
