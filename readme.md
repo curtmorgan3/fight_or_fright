@@ -1,4 +1,8 @@
-Wireframe: https://wireframe.cc/4Ja0ae
+Wireframe: https://wireframe.cc/7wczey
+           https://wireframe.cc/4Ja0ae
+           https://wireframe.cc/zHqdCd
+
+
 
 #h1 Description
 
@@ -41,7 +45,7 @@ The player's stats are tracked and used, in addition to randomness, to decide th
   1. Turn order
   2. Attack hit / miss
   3. Damage
-  4. Fortitude
+  4. Health
 
 When the player destroys all opponents, a new level is generated.
 
@@ -52,11 +56,11 @@ When the player loses all health, the game is over.
 #h1 Functional Specifications
 
 The user enters a name and is presented with a choice of characters, each with certain stat advantages.
-    1. Knight: Higher Strength
-    2. Rogue: Higher Speed
-    3. Ninja: Higher Dexterity
-    4. Priest: Higher Fortitude
-    5. Gambler: Higher Luck
+  1. Knight: Higher Strength
+  2. Rogue: Higher Speed
+  3. Ninja: Higher Dexterity
+  4. Priest: Higher Fortitude
+  5. Gambler: Higher Luck
 
 The user is given a choice to enter the room (next level) or to rest (restore all health).
 
