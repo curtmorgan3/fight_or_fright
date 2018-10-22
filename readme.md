@@ -89,7 +89,7 @@ After a floor is cleared, loot is presented to the player on a random basis acco
 Loot consists of potions and new weapons.
 
 ## Attributes to Modifier Table
-  |1. Score   |	 Modifier
+  | Score   |	 Modifier
   |--------   |:-----------:
   |  1	    |    −5
   |  2–3	  |    −4
@@ -139,3 +139,28 @@ For example, to determine a players armor class, add ten to his dexterity modifi
 ### Leveling Up
   1. Increment vitality by adding a random number 1-6 to fortitude modifier.
   2. The player adds a single point to any of his core attributes.
+  3. Experience points are awarded based on the levels of the opponents destroyed
+  4. Experience points required to level up increase exponentially at each level
+
+  |XP       | Level
+  |---------|:--------:
+  |0	      |  1
+  |300	    |  2
+  |900	    |  3
+  |2,700	  |  4
+  |6,500	  |  5
+  |14,000	  |  6
+  |23,000	  |  7
+  |34,000	  |  8
+  |48,000	  |  9
+  |64,000	  |  10
+  |85,000	  |  11
+  |100,000  |	 12
+  |120,000  |	 13
+  |140,000  |	 14
+  |165,000  |	 15
+  |195,000  |	 16
+  |225,000  |	 17
+  |265,000  |	 18
+  |305,000  |	 19
+  |355,000  |	 20
