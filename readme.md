@@ -188,6 +188,29 @@ The player is presented with a random combination of five possible monster types
       1. High strength
   5. Vampire
       1. High fortitude
-      
+
 Monsters are generated at 0-3 levels higher than the player, randomly. Their stats are
 generated in the same way the player's are.
+
+
+## Anticipated Functions
+
+randNum(n)
+
+generateCharacter(x)
+  randNum(20)
+  x.strength = randNum + 2
+  ...
+
+attack(off, def)
+  randNum() + off.dexterity
+  check against def.armor
+  if hit, getDamage()
+
+getDamage(off, def)
+    def.vitality -= (randNum(weapon) + off.strength)
+
+createFloor()
+  generateCharacter * randNum(player.level - 2 to player.level + 2)
+  let turnOrder = [all characters];
+  turnOrder.sort(by speed)
