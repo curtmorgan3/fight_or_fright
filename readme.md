@@ -198,19 +198,19 @@ generated in the same way the player's are.
 randNum(n)
 
 generateCharacter(x)
-  randNum(20)
-  x.strength = randNum + 2
-  ...
+  1. randNum(20)
+  1. x.strength = randNum + 2
+  1. ...
 
 attack(off, def)
-  randNum() + off.dexterity
-  check against def.armor
-  if hit, getDamage()
+  1. randNum() + off.dexterity
+  1. check against def.armor
+  1. if hit, getDamage()
 
 getDamage(off, def)
-    def.vitality -= (randNum(weapon) + off.strength)
+  1. def.vitality -= (randNum(weapon) + off.strength)
 
 createFloor()
-  generateCharacter * randNum(player.level - 2 to player.level + 2)
-  let turnOrder = [all characters];
-  turnOrder.sort(by speed)
+  1. generateCharacter * randNum(player.level - 2 to player.level + 2)
+  1. let turnOrder = [all characters];
+  1. turnOrder.sort(by speed)
