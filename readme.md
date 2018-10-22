@@ -21,8 +21,7 @@ The child will have stats that determine certain actions:
 
 The monsters will have their own stats of all the above minus luck (monsters aren't lucky)
 
-At the start of each floor
-, the turn order is established randomly, favoring speed. Each monster, plus
+At the start of each floor, the turn order is established randomly, favoring speed. Each monster, plus
 the hero, will have a turn.
 
 During each turn the hero may either:
@@ -93,11 +92,11 @@ Loot consists of potions and new weapons.
 
 
 Damage:
-    1. Damage is calculated by rolling a random number between 1 and n, n being higher for better weapons.
-        1. Poor: 1-6
-        2. Decent: 1-8
-        3. Good: 1-12
-        4. Great: 1-16
-        5. Awesome: 1-20
-    2. That number is then multiplied by the character's strength score / 10.
-      1. For example, a player with a strength of 5 who rolls an 8 will do 9 damage.
+  1. Damage is calculated by rolling a random number between 1 and n, n being higher for better weapons.
+      1. Poor: 1-6
+      2. Decent: 1-8
+      3. Good: 1-12
+      4. Great: 1-16
+      5. Awesome: 1-20
+  2. That number is then multiplied by the character's strength score / 10.
+    1. For example, a player with a strength of 5 who rolls an 8 will do 9 damage.
