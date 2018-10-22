@@ -10,7 +10,7 @@ is armed with a wooden sword and his wit. Each level of the house is populated w
 to slay. As the hero slays more and more monsters, he gets stronger, faster and smarter. As the hero levels
 up, so too do the monsters he must destroy.
 
-The child will have stats that determine certain actions:
+The hero will have stats that determine certain actions:
   1. Strength will make his attacks deal more damage
   2. Speed will make him harder for monsters to hit and more likely to go first
   3. Dexterity will make it easier to hit monsters
@@ -88,8 +88,32 @@ On the opponent's turn, it will:
 After a floor is cleared, loot is presented to the player on a random basis accounting for player's luck.
 Loot consists of potions and new weapons.
 
+## Attributes to Modifier Table
+  1. Score	Modifier
+    1. 1	        −5
+    1. 2–3	      −4
+    1. 4–5	      −3
+    1. 6–7	      −2
+    1. 8–9	      −1
+    1. 10–11	    +0
+    1. 12–13	    +1
+    1. 14–15	    +2
+    1. 16–17	    +3
+    1. 18–19	    +4
+    1. 20–21	    +5
+    1. 22–23	    +6
+    1. 24–25	    +7
+    1. 26–27	    +8
+    1. 28–29	    +9
+    1. 30	       +10
 
-Damage:
+For example, to determine a players armor class, add ten to his dexterity modifier. His speed score is 12, his modifier is 1, so his armor class is 11.
+
+### Hit / Miss:
+  1. Hitting is determined by taking a random number 1-20, adding the attacker's dexterity modifier, then
+     comparing that against the defender's armor class.
+
+### Damage:
   1. Damage is calculated by rolling a random number between 1 and n, n being higher for better weapons.
       1. Poor: 1-6
       2. Decent: 1-8
@@ -98,3 +122,19 @@ Damage:
       5. Awesome: 1-20
   2. That number is then multiplied by the character's strength score / 10.
     1. For example, a player with a strength of 5 who rolls an 8 will do 9 damage.
+
+### Health
+  1. A character's health is determined by summing three random numbers 1-4, plus fortitude modifier.
+
+### Loot
+  1. The player is presented with random loot after each floor is cleared. The chances of loot are:
+    1. Poor 80%
+    2. Decent 75%
+    3. Good 50%
+    4. Great 15%
+    5. Awesome 2%
+  2. To determine which quality of loot appears, add the players luck modifier.
+
+### Leveling Up
+  1. Increment vitality by adding a random number 1-6 to fortitude modifier.
+  2. The player adds a single point to any of his core attributes.
