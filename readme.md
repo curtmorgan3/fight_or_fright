@@ -117,9 +117,9 @@ for class:
   |  24–25	|    +7
   |  26–27	|    +8
   |  28–29	|    +9
-  |  30	  |   +10
+  |  30	    |   +10
 
-For example, to determine a players armor class, add ten to his dexterity modifier. His speed score is 12, his modifier is 1, so his armor class is 11.
+For example, to determine a players armor class, add 10 to his dexterity modifier. His speed score is 12, his modifier is 1, so his armor class is 11.
 
 ### Hit / Miss:
   1. Hitting is determined by taking a random number 1-20, adding the attacker's dexterity modifier, then
@@ -132,8 +132,7 @@ For example, to determine a players armor class, add ten to his dexterity modifi
       3. Good: 1-12
       4. Great: 1-16
       5. Awesome: 1-20
-  2. That number is then multiplied by the character's strength score / 10.
-    1. For example, a player with a strength of 5 who rolls an 8 will do 9 damage.
+  2. That number is then multiplied by the character's strength modifier.
 
 ### Health
   1. A character's health is determined by summing three random numbers 1-4, plus fortitude modifier.
@@ -180,14 +179,15 @@ For example, to determine a players armor class, add ten to his dexterity modifi
 ### Monsters
 The player is presented with a random combination of five possible monster types:
   1. Skeleton
-    1. Basic, no additions
+      1. Basic, no additions
   2. Werewolf
-    3. High dexterity
+      1. High dexterity
   3. Ghost
-    1. High speed
+      1. High speed
   4. Zombie
-    1. High strength
+      1. High strength
   5. Vampire
-    1. High fortitude
+      1. High fortitude
+      
 Monsters are generated at 0-3 levels higher than the player, randomly. Their stats are
-generated in the same way the player's are. 
+generated in the same way the player's are.
