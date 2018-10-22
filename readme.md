@@ -119,7 +119,7 @@ for class:
   |  28–29	|    +9
   |  30	    |   +10
 
-For example, to determine a players armor class, add 10 to his dexterity modifier. His speed score is 12, his modifier is 1, so his armor class is 11.
+For example, to determine a players armor class, add 10 to his speed modifier. His speed score is 12, his modifier is 1, so his armor class is 11.
 
 ### Hit / Miss:
   1. Hitting is determined by taking a random number 1-20, adding the attacker's dexterity modifier, then
@@ -132,7 +132,7 @@ For example, to determine a players armor class, add 10 to his dexterity modifie
       3. Good: 1-12
       4. Great: 1-16
       5. Awesome: 1-20
-  2. That number is then multiplied by the character's strength modifier.
+  2. That number is then added to the character's strength modifier.
 
 ### Health
   1. A character's health is determined by summing three random numbers 1-4, plus fortitude modifier.
@@ -214,3 +214,5 @@ createFloor()
   1. generateCharacter * randNum(player.level - 2 to player.level + 2)
   1. let turnOrder = [all characters];
   1. turnOrder.sort(by speed)
+
+keepWeapon()
