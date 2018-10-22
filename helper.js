@@ -15,7 +15,7 @@ function setAtt(){
   return Math.floor( sum / 3 );
 }
 
-function getMod(char){ //pass in character.attribute
+function getMod(char){ //pass in character.attribute, which is a number value
   let mod = -5;
   for (i = 1; i<char; i+= 2){
     mod += 1;
@@ -29,21 +29,36 @@ function generateCharacter(costume){
   // TODO: Capture player name global
   player.name = `${name}`;
   player.level = 1;
-  player.hp = setAtt() + 10;
+  player.xp = 0;
   player.str = setAtt();
   player.dex = setAtt();
   player.speed = setAtt();
   player.fort = setAtt();
   player.luck = setAtt();
+  player.maxHP = setAtt() + getMod(player.fort);
   player.ac = getMod(player.speed) + 10;
+  player.costume = costume;
   player.weapon = 5;
+  player.inventory = [];
+
 
   switch(costume){
     case 'knight':
       player.str += 4;
-      console.log('+2 Strength');
     break;
-    // TODO: Add other classes
+    case 'rogue':
+      player.speed += 4;
+    break;
+    case 'ninja':
+      player.dex += 4;
+    break;
+    case 'priest':
+      player.fort += 4;
+    break;
+    case 'gambler':
+      player.luck += 4;
+    break;
+
   };
   return player;
 }
@@ -113,14 +128,13 @@ function calcDam(off, deff){
   deff.hp -= damage;
 }
 
-function generateWeapon(type){ //pass type or leave blank for random based on player's luck 
+function generateWeapon(type){ //pass type or leave blank for random based on player's luck
   let weapon;
   let num;
   if(type){
     num = type;
   }else {
     num = randNum(100) + getMod(player.luck);
-    console.log(num);
   }
 
   switch(true){
@@ -152,3 +166,88 @@ function generateWeapon(type){ //pass type or leave blank for random based on pl
   }
   return weapon;
 }
+
+function generatePotion(){
+  let inven = player.inventory;
+  let potionCount = 0;
+  for(i = 0; i<inven.length; i++){
+    if(inven[i] === 'healthPotion'){
+      potionCount += 1;
+    }
+  }
+  if (potionCount < 3){
+    inven.push('healthPotion');
+  }else{
+    console.log('You already have three potions!');
+  }
+
+  console.log(inven);
+};
+
+function levelUp(att){ //pass the skill point the user selects
+  let costume = player.costume;
+  console.log(costume);
+  switch(att){
+    case 'str':
+      if(costume === 'knight'){
+        player.str+=2;
+      }else{
+        player.str += 1;
+    }
+    break;
+    case 'dex':
+      if(costume === 'rogue'){
+        player.dex += 2;
+      }else{
+        player.dex += 1;
+      };
+    break;
+    case 'speed':
+      if(costume === 'ninja'){
+        player.speed += 2;
+      }else{
+        player.speed += 1;
+      };
+    break;
+    case 'fort':
+      if(costume === 'priest'){
+        player.fort += 2;
+      }else {
+        player.fort += 1;
+      };
+    break;
+    case 'luck':
+      if(costume === 'gambler'){
+        player.luck += 2;
+      }else{
+        player.luck += 1;
+      };
+    break;
+  };
+
+  player.maxHP += randNum(6) + getMod(player.fort);
+  player.ac = getMod(player.speed) + 10;
+  player.level += 1;
+
+}
+
+function isKilled(char){
+  let xp = (char.level * randNum(800) + (randNum(100) * getMod(player.luck)) );
+  player.xp += xp;
+  dropLoot();
+}
+
+function dropLoot(){
+  let num = randNum(100);
+
+
+  if(num < 75){
+    player.weapon = generateWeapon();
+    console.log('Added weapon');
+    console.log(player.weapon);
+  }else{
+    generatePotion();
+    console.log('added potion');
+  };
+
+};
