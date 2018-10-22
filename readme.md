@@ -89,23 +89,24 @@ After a floor is cleared, loot is presented to the player on a random basis acco
 Loot consists of potions and new weapons.
 
 ## Attributes to Modifier Table
-  1. Score	Modifier
-    1. 1	        −5
-    1. 2–3	      −4
-    1. 4–5	      −3
-    1. 6–7	      −2
-    1. 8–9	      −1
-    1. 10–11	    +0
-    1. 12–13	    +1
-    1. 14–15	    +2
-    1. 16–17	    +3
-    1. 18–19	    +4
-    1. 20–21	    +5
-    1. 22–23	    +6
-    1. 24–25	    +7
-    1. 26–27	    +8
-    1. 28–29	    +9
-    1. 30	       +10
+  1. Score    |	 Modifier
+  |:--------  |:-----------:
+  |  1. 1	    |    −5
+  |  1. 2–3	  |    −4
+  |  1. 4–5	  |    −3
+  |  1. 6–7	  |    −2
+  |  1. 8–9	  |    −1
+  |  1. 10–11	|    +0
+  |  1. 12–13	|    +1
+  |  1. 14–15	|    +2
+  |  1. 16–17	|    +3
+  |  1. 18–19	|    +4
+  |  1. 20–21	|    +5
+  |  1. 22–23	|    +6
+  |  1. 24–25	|    +7
+  |  1. 26–27	|    +8
+  |  1. 28–29	|    +9
+  |  1. 30	  |   +10
 
 For example, to determine a players armor class, add ten to his dexterity modifier. His speed score is 12, his modifier is 1, so his armor class is 11.
 
