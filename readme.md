@@ -10,7 +10,12 @@ is armed with a wooden sword and his wit. Each level of the house is populated w
 to slay. As the hero slays more and more monsters, he gets stronger, faster and smarter. As the hero levels
 up, so too do the monsters he must destroy.
 
-The hero will have stats that determine certain actions.
+The hero will have stats that determine certain actions:
+  1. Strength
+  2. Speed
+  3. Dexterity
+  4. Fortitude
+  5. Luck
 
 The monsters will have their own stats of all the above minus luck (monsters aren't lucky)
 
