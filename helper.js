@@ -59,7 +59,6 @@ function playerTurn(){
 
 }
 
-
 function endFloor(){
   player.hp = player.maxHP;
   checkXP();
@@ -68,7 +67,13 @@ function endFloor(){
 }
 
 
+function renderAll(){
+  renderFloor();
+  renderField();
+  renderInventory();
+  renderTurnOrder();
 
+}
 
 
 
@@ -128,7 +133,7 @@ function renderField(){
   playerStats.className = 'playerStats';
   playerStats.innerText = `Strength: ${player.str} Speed: ${player.speed}  \n
                            Dexterity: ${player.dex} Fortitude: ${player.fort} \n
-                           Luck: ${player.luck}`;
+                           Luck: ${player.luck} Level: ${player.level}`;
   playerRow.appendChild(playerStats);
 
   let playerPortrait = document.createElement('div');
@@ -146,6 +151,11 @@ function renderField(){
 
 function renderTurnOrder(){
   let turnOrder = document.querySelector('.turn');
+  if(orderOfAttack.length >= 0){
+    while(turnOrder.firstChild){
+      turnOrder.removeChild(turnOrder.firstChild);
+    }
+  }
   for(let i=0; i < orderOfAttack.length; i++){
     let pawn = document.createElement('div');
     pawn.className = 'portrait';
@@ -156,9 +166,16 @@ function renderTurnOrder(){
 
 function renderFloor(){
   let background = document.querySelector('.background');
+  if(orderOfAttack.length <= 1){
+    while(background.firstChild){
+      background.removeChild(background.firstChild)
+    }
+  }
+
   for(let i=0; i < monsters.length; i++){
     let mon = document.createElement('div');
     mon.className = 'sprite';
+    mon.id = monsters[i].id;
     mon.innerText = monsters[i].name;
     background.appendChild(mon);
   }
@@ -307,10 +324,20 @@ function selectTarget(){
   console.log('Select Target');
   let floor = document.querySelector('.floor');
   let sprites = floor.querySelectorAll('.sprite');
-  sprites.addEventListener('click', function(){
-    let target = this;
-  })
-  attack(player, target);
+  for (let i = 0; i < sprites.length; i++){
+    let targetId = parseInt(sprites[i].id);
+    sprites[i].addEventListener('click', function(){
+      for(let i=0; i<monsters.length; i++){
+        let mon = monsters[i];
+        if(targetId === parseInt(mon.id)){
+          let target = mon;
+          attack(player, target);
+        }else{
+          console.log('ID not found');
+        }
+      }
+    });
+  }
 }
 
 function attack(off, deff){
@@ -364,12 +391,17 @@ function isKilled(char){
       console.log(`${monsters[i].name} slain!`);
       monsters.splice(i,1);
       orderOfAttack.splice(i,1);
+      if(orderOfAttack.length === 1){
+        orderOfAttack = [];
+      }
       killCount += 1;
     }
   }
-
   dropLoot();
-} //calc xp and give to player
+  checkXP();
+  renderAll();
+
+}
 
 function checkXP(){
   let xp = player.xp;
