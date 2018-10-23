@@ -1,16 +1,47 @@
 console.log('helper wired');
 
 let player = new Object();
-let monster = new Object();
+let monsters = [];
 
+
+function gameStart(){
+
+}
+
+function populateFloor(){
+  let num = randNum(3) + player.level;
+  for (i=0; i<num; i++){
+    generateMonster();
+  }
+  determineOrder();
+}
+
+function determineOrder(){
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//**************** Helpers Below **************************
 function randNum(n){
-  return Math.floor(Math.random() * n);
+  return Math.floor(Math.random() * Math.floor(n) + 1);
 }
 
 function setAtt(){
   let sum = 0;
   for(i = 0; i<3; i++){
-    sum += randNum(20);
+    sum += randNum(19);
   }
   return Math.floor( sum / 3 );
 }
@@ -35,11 +66,13 @@ function generateCharacter(costume){
   player.speed = setAtt();
   player.fort = setAtt();
   player.luck = setAtt();
-  player.maxHP = setAtt() + getMod(player.fort);
+  player.maxHP = setAtt() + getMod(player.fort) + 10;
   player.ac = getMod(player.speed) + 10;
   player.costume = costume;
   player.weapon = 5;
+  player.hp = player.maxHP;
   player.inventory = [];
+  player.init = 0 + getMod(player.speed);
 
 
   switch(costume){
@@ -64,6 +97,7 @@ function generateCharacter(costume){
 }
 
 function generateMonster(specific){ //pass in type for specific, leave blank for random
+  let monster = {};
   let ranType = ['skeleton','ghost','vampire','zombie','werewolf']
   let type;
   function getType(){
@@ -77,6 +111,7 @@ function generateMonster(specific){ //pass in type for specific, leave blank for
     getType();
   }
   monster.level = 1;
+  monster.id = randNum(100000);
   // TODO: Random level +- 3 of player.level
   monster.hp = setAtt() + 10;
   monster.str = setAtt();
@@ -84,40 +119,38 @@ function generateMonster(specific){ //pass in type for specific, leave blank for
   monster.speed = setAtt();
   monster.fort = setAtt();
   monster.ac = getMod(monster.speed) + 10;
+  monster.weapon = 5;
+  monster.spook = type;
+  monster.init = 0 + getMod(monster.speed);
 
   switch(type){
     case 'skeleton':
       console.log('Base Monster');
-      monster.weapon = `Bag o' Bones`;
     break;
     case 'werewolf':
       monster.dex += 3;
-      monster.weapon = 'Moonlight Sonata';
       console.log('+3 Dexterity');
     break;
     case 'vampire':
       monster.fort += 3;
-      monster.weapon = `Vampire Attack`;
       console.log('+3 Fortitude');
     break;
     case 'zombie':
       monster.str += 3;
-      monster.weapon = `Zombie Attack`;
       console.log('+3 Strength');
     break;
     case 'ghost':
       monster.speed += 3;
-      monster.weapon = `Ghost attack`;
       console.log('+3 Speed');
     break;
   };
-  return monster;
+  monsters.push(monster);
 }
 
 function attack(off, deff){
   let attack = randNum(20) + getMod(off.dex);
   if (attack >= deff.ac){
-    return 'hit';
+    calcDam(off, deff);
   }else{
     return 'miss';
   }
@@ -126,6 +159,9 @@ function attack(off, deff){
 function calcDam(off, deff){
   let damage = randNum(off.weapon) + off.str;
   deff.hp -= damage;
+  console.log(`${damage} Damage!`);
+  console.log(`Defender HP: ${deff.hp}`);
+  isAlive(deff);
 }
 
 function generateWeapon(type){ //pass type or leave blank for random based on player's luck
@@ -234,20 +270,51 @@ function levelUp(att){ //pass the skill point the user selects
 function isKilled(char){
   let xp = (char.level * randNum(800) + (randNum(100) * getMod(player.luck)) );
   player.xp += xp;
+  let id = char.id;
+
+  for (i = 0; i<monsters.length; i++){
+    if(monsters[i].id === id){
+      console.log(`${monsters[i].spook} slain!`);
+      monsters.splice(i,1);
+    }
+  }
+
   dropLoot();
-}
+} //calc xp and give to player
 
-function dropLoot(){
+function dropLoot(){ // 75% chance of dropping weapon, 25% drop potion
+  console.log("loot dropped");
   let num = randNum(100);
-
-
   if(num < 75){
     player.weapon = generateWeapon();
-    console.log('Added weapon');
-    console.log(player.weapon);
   }else{
     generatePotion();
-    console.log('added potion');
   };
 
 };
+
+function isAlive(deff){
+  let hp = deff.hp;
+  let id = deff.id;
+  let isPlayer = deff === player? true : false;
+  if(hp < 1){
+    if(isPlayer){
+      playerDies();
+    }else{
+      return isKilled(deff);
+    }
+  }else{
+    console.log("Alive");
+  }
+}
+
+function playerDies(){
+
+}
+
+
+function test(){
+  generateCharacter('priest');
+  generateMonster();
+  attack(player, monsters[0]);
+}
