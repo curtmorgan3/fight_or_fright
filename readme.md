@@ -216,3 +216,6 @@ createFloor()
   1. turnOrder.sort(by speed)
 
 keepWeapon()
+
+
+if player rolls a one, chance of weapon breaking

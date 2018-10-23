@@ -39,25 +39,27 @@ function endFloor(){
   populateFloor();
 }
 
-// checkXP();
-// populateInventory();
-// populateStats();
-// playerTurn(){
-//   //attack, escape, or potion
-// }
+// TODO: checkXP();
+// TODO: populateInventory();
+// TODO: populateStats();
+// TODO: playerTurn(){
+
 function beginTurn(){
-  for (i = 0; i<orderOfAttack.length; i++){
-    let mon = orderOfAttack[i];
-    if (mon === player){
+  for (let i = 0; i<orderOfAttack.length; i++){
+    // debugger;
+    let index = orderOfAttack[i];
+    if (orderOfAttack.length === 1){
+      return orderOfAttack = [];
+    }else if (index === player){
       //playerTurn();
-      attack(player, mon);
       console.log("player's turn");
+      attack(player, orderOfAttack[i+1]);
     }else{
-      let id = mon.id;
-      console.log(`${id.spook} attacked. `);
-      attack(mon, player);
+      console.log(`${orderOfAttack[i].spook} attacked. `);
+      attack(orderOfAttack[i], player);
     }
   }
+  console.log(orderOfAttack);
   beginTurn();
 };
 
@@ -139,7 +141,7 @@ function generateMonster(specific){ //pass in type for specific, leave blank for
   let type;
   function getType(){
     for(i = 0; i < ranType.length; i++){
-      type = ranType[randNum(ranType.length)];
+      type = ranType[randNum(ranType.length)-1];
     }
   }
   if(specific){
@@ -189,13 +191,17 @@ function attack(off, deff){
   if (attack >= deff.ac){
     calcDam(off, deff);
   }else{
-    return 'miss';
+    console.log("miss");
   }
 }
 
 function calcDam(off, deff){
-  let damage = randNum(off.weapon) + off.str;
-  deff.hp -= damage;
+  let damage = randNum(off.weapon) + getMod(off.str);
+  if (damage > 0){
+    deff.hp -= damage;
+  }else{
+    damage = 0;
+  }
   console.log(`${damage} Damage!`);
   console.log(`Defender HP: ${deff.hp}`);
   isAlive(deff);
@@ -313,6 +319,7 @@ function isKilled(char){
     if(monsters[i].id === id){
       console.log(`${monsters[i].spook} slain!`);
       monsters.splice(i,1);
+      orderOfAttack.splice(i,1);
     }
   }
 
@@ -347,11 +354,11 @@ function isAlive(deff){
 
 function playerDies(){
   return console.log("Player Died");
+  orderOfAttack = [];
 }
 
 
 function test(){
   generateCharacter('priest');
-  generateMonster();
-  attack(player, monsters[0]);
+  populateFloor();
 }
