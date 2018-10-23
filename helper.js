@@ -3,8 +3,12 @@ console.log('helper wired');
 let player = new Object();
 let monsters = [];
 let orderOfAttack = [];
+let playerPos = 0;
+let playerMiddle = false;
+let playersTurn = false;
 let floorCount = 1;
 let killCount = 0;
+let countDown = 0;
 
 
 //************** Game Logic *****************************
@@ -26,36 +30,52 @@ function populateFloor(){
   renderTurnOrder();
   renderFloor();
   renderInventory();
-  // beginTurn();
+  beginTurn();
 }
 
 function beginTurn(){
-  for (let i = 0; i<orderOfAttack.length; i++){
-    // debugger;
-    let index = orderOfAttack[i];
-    if (orderOfAttack.length === 1){
-      return orderOfAttack = [];
-    }else if (index === player){
-      //playerTurn();
-      console.log("player's turn");
-      // attack(player, orderOfAttack[i+1]);
-    }else{
-      console.log(`${orderOfAttack[i].name} attacked. `);
-      attack(orderOfAttack[i], player);
+let playerFirst = isPlayerFirst();
+
+  if (playerFirst){
+    console.log('player is first');
+    return
+  }else if (!playerFirst) || ((playerFirst) && (!playersTurn)){
+    for (let i =0; i<orderOfAttack.length; i++){
+      let mon = orderOfAttack[i];
+      if (!(mon === player)){
+        console.log(`${mon.name} attacks!`);
+        attack(mon, player);
+      }else if (mon === player){
+        console.log('player in the middle, his turn');
+        playerPos = i;
+        playerMiddle = true;
+        return
+      }
+    }
+  }else if (!(playerFirst) && playerMiddle){
+    for (let i = playerPos + 1; i<orderOfAttack.length; i++){
+      let mon = orderOfAttack[i];
+      console.log(`${mon.name} attacks!`);
+      attack(mon, player);
+      playerMiddle = false;
+      beginTurn();
     }
   }
-  console.log(orderOfAttack);
-  beginTurn();
 };
+
+// TODO: use toggle to break loop, then after player turn return to position player + 1
 
 function playerTurn(){
   let attackButton = document.querySelector('#attackButton');
-  let potionButton = document.querySelector('#potionButton');
+  let potionButton = document.querySelectorAll('#potionButton');
   let escapeButton = document.querySelector('#escapeButton');
 
-  attackButton.addEventListener('click', attack);
-  potionButton.addEventListener('click', usePotion);
-  escapeButton.addEventListener('click', escape);
+  for(i = 0; i < potionButton.length; i++){
+    potionButton.addEventListener('click', usePotion);
+  }
+  // escapeButton.addEventListener('click', escape);
+
+
 
 }
 
@@ -67,15 +87,16 @@ function endFloor(){
 }
 
 
-function renderAll(){
-  renderFloor();
-  renderField();
-  renderInventory();
-  renderTurnOrder();
 
+
+function gameOver(){
+  console.log(killCount);
+  console.log(floorCount);
+  player = new Object();
+  monsters = [];
+  orderOfAttack = [];
+  return alert("Game Over");
 }
-
-
 
 
 //*************** Rendering ******************************
@@ -183,6 +204,11 @@ function renderFloor(){
 
 function renderInventory(){
   let inven = document.querySelector('.inventory');
+  if(player.inventory.length <= 1){
+    while(inven.firstChild){
+      inven.removeChild(inven.firstChild)
+    }
+  }
   for (i=0; i < player.inventory.length; i++){
     let potion = document.createElement('div');
     potion.className = 'healthPotion';
@@ -191,7 +217,14 @@ function renderInventory(){
   }
 }
 
+function renderAll(){
+  renderTurnOrder();
+  renderFloor();
+  renderField();
+  renderInventory();
 
+
+}
 
 //**************** Helpers *******************************
 function randNum(n){
@@ -204,6 +237,12 @@ function setAtt(){
     sum += randNum(19);
   }
   return Math.floor( sum / 3 );
+}
+
+function isPlayerFirst(){
+  if(orderOfAttack[0] === player){
+    return true;
+  };
 }
 
 function getMod(char){ //pass in character.attribute, which is a number value
@@ -347,6 +386,10 @@ function attack(off, deff){
   }else{
     console.log("miss");
   }
+  if (off === player){
+    playersTurn = false;
+  }
+  beginTurn();
 }
 
 function calcDam(off, deff){
@@ -377,8 +420,9 @@ function isAlive(deff){
 }
 
 function playerDies(){
-  return console.log("Player Died");
+  console.log("Player Died");
   orderOfAttack = [];
+  gameOver();
 }
 
 function isKilled(char){
