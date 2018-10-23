@@ -3,46 +3,31 @@ console.log('helper wired');
 let player = new Object();
 let monsters = [];
 let orderOfAttack = [];
-let floorCount = 0;
+let floorCount = 1;
+let killCount = 0;
 
+
+//************** Game Logic *****************************
 function gameStart(){
-
+  generateCharacter('knight');
+  renderStart();
+  populateFloor();
+  let attackButton = document.querySelector('.attackButton');
+  attackButton.addEventListener('click', selectTarget);
 }
 
 function populateFloor(){
-  let num = randNum(3) + player.level;
+  let num = randNum(3) + randNum(player.level);
   for (i=0; i<num; i++){
     generateMonster();
   }
   determineOrder();
-  // populateInventory();
-  // populateStats();
-  beginTurn();
+  renderField();
+  renderTurnOrder();
+  renderFloor();
+  renderInventory();
+  // beginTurn();
 }
-
-function determineOrder(){
-  let roll = randNum(19);
-  let order = [];
-  order.push(player);
-  for (i = 0; i<monsters.length; i++){
-    order.push(monsters[i]);
-  }
-  order.sort(function(a,b) {return (a.init + roll) - (b.init + roll)});
-  orderOfAttack = order.reverse();
-  console.log(orderOfAttack);
-}
-
-function endFloor(){
-  player.hp = player.maxHP;
-  checkXP();
-  floorCount += 1;
-  populateFloor();
-}
-
-// TODO: checkXP();
-// TODO: populateInventory();
-// TODO: populateStats();
-// TODO: playerTurn(){
 
 function beginTurn(){
   for (let i = 0; i<orderOfAttack.length; i++){
@@ -53,9 +38,9 @@ function beginTurn(){
     }else if (index === player){
       //playerTurn();
       console.log("player's turn");
-      attack(player, orderOfAttack[i+1]);
+      // attack(player, orderOfAttack[i+1]);
     }else{
-      console.log(`${orderOfAttack[i].spook} attacked. `);
+      console.log(`${orderOfAttack[i].name} attacked. `);
       attack(orderOfAttack[i], player);
     }
   }
@@ -63,6 +48,24 @@ function beginTurn(){
   beginTurn();
 };
 
+function playerTurn(){
+  let attackButton = document.querySelector('#attackButton');
+  let potionButton = document.querySelector('#potionButton');
+  let escapeButton = document.querySelector('#escapeButton');
+
+  attackButton.addEventListener('click', attack);
+  potionButton.addEventListener('click', usePotion);
+  escapeButton.addEventListener('click', escape);
+
+}
+
+
+function endFloor(){
+  player.hp = player.maxHP;
+  checkXP();
+  floorCount += 1;
+  populateFloor();
+}
 
 
 
@@ -70,9 +73,110 @@ function beginTurn(){
 
 
 
+//*************** Rendering ******************************
+function renderStart(){
+  let field = document.querySelector('.field');
+
+  let floor = document.createElement('div');
+  floor.className = 'floor';
+  let background = document.createElement('div');
+  background.className = 'background';
+  let turnOrder = document.createElement('div');
+  turnOrder.className = 'turn'
+  let actions = document.createElement('div');
+  actions.className = 'actions'
+  let playerRow = document.createElement('div');
+  playerRow.className = 'player'
+  let inventory =  document.createElement('div');
+  inventory.className = 'inventory';
+
+  field.appendChild(floor);
+  floor.appendChild(background);
+  field.appendChild(turnOrder);
+  field.appendChild(actions);
+  field.appendChild(playerRow);
+  field.appendChild(inventory);
+}
+
+function renderField(){
+  let actions = document.querySelector('.actions');
+  let playerRow = document.querySelector('.player');
+
+  if(actions.firstChild){
+    while(actions.firstChild){
+      actions.removeChild(actions.firstChild);
+    }
+  }
+  if(playerRow.firstChild){
+    while(playerRow.firstChild){
+      playerRow.removeChild(playerRow.firstChild);
+    }
+  }
 
 
-//**************** Helpers Below **************************
+
+  let attackButton = document.createElement('div');
+  attackButton.className = 'attackButton';
+  attackButton.innerText = 'Attack';
+  let escapeButton = document.createElement('div');
+  escapeButton.className = 'escapeButton';
+  escapeButton.innerText = 'Escape';
+  actions.appendChild(attackButton);
+  actions.appendChild(escapeButton);
+
+  let playerStats = document.createElement('div');
+  playerStats.className = 'playerStats';
+  playerStats.innerText = `Strength: ${player.str} Speed: ${player.speed}  \n
+                           Dexterity: ${player.dex} Fortitude: ${player.fort} \n
+                           Luck: ${player.luck}`;
+  playerRow.appendChild(playerStats);
+
+  let playerPortrait = document.createElement('div');
+  playerPortrait.className = 'portrait';
+  playerPortrait.innerText = player.name;
+  playerRow.appendChild(playerPortrait);
+
+  let weaponStats = document.createElement('div');
+  weaponStats.className = 'playerWeapon';
+  weaponStats.innerText = `${player.weaponName}\n
+                           ${player.weaponQual}: 1-${player.weapon} damange`;
+  playerRow.appendChild(weaponStats);
+
+}
+
+function renderTurnOrder(){
+  let turnOrder = document.querySelector('.turn');
+  for(let i=0; i < orderOfAttack.length; i++){
+    let pawn = document.createElement('div');
+    pawn.className = 'portrait';
+    pawn.innerText = orderOfAttack[i].name;
+    turnOrder.appendChild(pawn);
+  }
+}
+
+function renderFloor(){
+  let background = document.querySelector('.background');
+  for(let i=0; i < monsters.length; i++){
+    let mon = document.createElement('div');
+    mon.className = 'sprite';
+    mon.innerText = monsters[i].name;
+    background.appendChild(mon);
+  }
+}
+
+function renderInventory(){
+  let inven = document.querySelector('.inventory');
+  for (i=0; i < player.inventory.length; i++){
+    let potion = document.createElement('div');
+    potion.className = 'healthPotion';
+    potion.innerText = 'Health Potion';
+    inven.appendChild(potion);
+  }
+}
+
+
+
+//**************** Helpers *******************************
 function randNum(n){
   return Math.floor(Math.random() * Math.floor(n) + 1);
 }
@@ -93,6 +197,18 @@ function getMod(char){ //pass in character.attribute, which is a number value
   return mod;
 }
 
+function determineOrder(){
+  let roll = randNum(19);
+  let order = [];
+  order.push(player);
+  for (i = 0; i<monsters.length; i++){
+    order.push(monsters[i]);
+  }
+  order.sort(function(a,b) {return (a.init + roll) - (b.init + roll)});
+  orderOfAttack = order.reverse();
+  console.log(orderOfAttack);
+}
+
 function generateCharacter(costume){
   //create a player object, add attributes
   let name = 'Curt'
@@ -108,11 +224,12 @@ function generateCharacter(costume){
   player.maxHP = setAtt() + getMod(player.fort) + 10;
   player.ac = getMod(player.speed) + 10;
   player.costume = costume;
-  player.weapon = 5;
+  player.weapon = 6;
+  player.weaponName = 'Wooden Sword';
   player.hp = player.maxHP;
   player.inventory = [];
   player.init = 0 + getMod(player.speed);
-
+  player.weaponQual = 'Poor';
 
   switch(costume){
     case 'knight':
@@ -159,7 +276,7 @@ function generateMonster(specific){ //pass in type for specific, leave blank for
   monster.fort = setAtt();
   monster.ac = getMod(monster.speed) + 10;
   monster.weapon = 5;
-  monster.spook = type;
+  monster.name = type;
   monster.init = 0 + getMod(monster.speed);
 
   switch(type){
@@ -186,6 +303,16 @@ function generateMonster(specific){ //pass in type for specific, leave blank for
   monsters.push(monster);
 }
 
+function selectTarget(){
+  console.log('Select Target');
+  let floor = document.querySelector('.floor');
+  let sprites = floor.querySelectorAll('.sprite');
+  sprites.addEventListener('click', function(){
+    let target = this;
+  })
+  attack(player, target);
+}
+
 function attack(off, deff){
   let attack = randNum(20) + getMod(off.dex);
   if (attack >= deff.ac){
@@ -207,60 +334,56 @@ function calcDam(off, deff){
   isAlive(deff);
 }
 
-function generateWeapon(type){ //pass type or leave blank for random based on player's luck
-  let weapon;
-  let num;
-  if(type){
-    num = type;
-  }else {
-    num = randNum(100) + getMod(player.luck);
+function isAlive(deff){
+  let hp = deff.hp;
+  let id = deff.id;
+  let isPlayer = deff === player? true : false;
+  if(hp < 1){
+    if(isPlayer){
+      playerDies();
+    }else{
+      return isKilled(deff);
+    }
+  }else{
+    console.log("Alive");
   }
-
-  switch(true){
-    //1-50
-    case (num <= 50):
-    case (num ==='poor'):
-      weapon =  6;
-    break;
-    //51-70
-    case (num > 50 && num <= 70):
-    case (num ==='decent'):
-      weapon =  8;
-    break;
-    //71-85
-    case (num > 70 && num <= 85):
-    case (num ==='good'):
-      weapon =  12;
-    break;
-    //86-95
-    case (num > 85 && num <= 95):
-    case (num === 'great'):
-      weapon =  16;
-    break;
-    //96-100
-    case (num > 95 && num <= 100):
-    case (num ==='awesome'):
-      weapon =  20;
-    break;
-  }
-  return weapon;
 }
 
-function generatePotion(){
-  let inven = player.inventory;
-  let potionCount = 0;
-  for(i = 0; i<inven.length; i++){
-    if(inven[i] === 'healthPotion'){
-      potionCount += 1;
+function playerDies(){
+  return console.log("Player Died");
+  orderOfAttack = [];
+}
+
+function isKilled(char){
+  let xp = (char.level * randNum(800) + (randNum(100) * getMod(player.luck)) );
+  player.xp += xp;
+  let id = char.id;
+
+  for (i = 0; i<monsters.length; i++){
+    if(monsters[i].id === id){
+      console.log(`${monsters[i].name} slain!`);
+      monsters.splice(i,1);
+      orderOfAttack.splice(i,1);
+      killCount += 1;
     }
   }
-  if (potionCount < 3){
-    inven.push('healthPotion');
-  }else{
-    console.log('You already have three potions!');
-  }
 
-  console.log(inven);
+  dropLoot();
+} //calc xp and give to player
+
+function checkXP(){
+  let xp = player.xp;
+  let currentLevel = player.level;
+  let nextLevel = currentLevel + 1;
+
+  let requiredXP = ( ( ( (nextLevel * nextLevel) + nextLevel) / 2) * 100) - (nextLevel * 100);
+  console.log(requiredXP);
+  if (xp >= requiredXP){
+    levelUp('str');
+    checkXP();
+  }else{
+    return console.log("Not enough XP");
+  }
 };
 
 function levelUp(att){ //pass the skill point the user selects
@@ -310,22 +433,6 @@ function levelUp(att){ //pass the skill point the user selects
 
 }
 
-function isKilled(char){
-  let xp = (char.level * randNum(800) + (randNum(100) * getMod(player.luck)) );
-  player.xp += xp;
-  let id = char.id;
-
-  for (i = 0; i<monsters.length; i++){
-    if(monsters[i].id === id){
-      console.log(`${monsters[i].spook} slain!`);
-      monsters.splice(i,1);
-      orderOfAttack.splice(i,1);
-    }
-  }
-
-  dropLoot();
-} //calc xp and give to player
-
 function dropLoot(){ // 75% chance of dropping weapon, 25% drop potion
   console.log("loot dropped");
   let num = randNum(100);
@@ -334,31 +441,79 @@ function dropLoot(){ // 75% chance of dropping weapon, 25% drop potion
   }else{
     generatePotion();
   };
-
 };
 
-function isAlive(deff){
-  let hp = deff.hp;
-  let id = deff.id;
-  let isPlayer = deff === player? true : false;
-  if(hp < 1){
-    if(isPlayer){
-      playerDies();
-    }else{
-      return isKilled(deff);
+function generateWeapon(type){ //pass type or leave blank for random based on player's luck
+  let weapon;
+  let num;
+  if(type){
+    num = type;
+  }else {
+    num = randNum(100) + getMod(player.luck);
+  }
+
+  switch(true){
+    //1-50
+    case (num <= 50):
+    case (num ==='poor'):
+      weapon =  6;
+      player.weaponQual = 'Poor';
+      // TODO: Generate random weapon name
+    break;
+    //51-70
+    case (num > 50 && num <= 70):
+    case (num ==='decent'):
+      weapon =  8;
+      player.weaponQual = 'Decent';
+    break;
+    //71-85
+    case (num > 70 && num <= 85):
+    case (num ==='good'):
+      weapon =  12;
+      player.weaponQual = 'Good';
+    break;
+    //86-95
+    case (num > 85 && num <= 95):
+    case (num === 'great'):
+      weapon =  16;
+      player.weaponQual = 'Great';
+    break;
+    //96-100
+    case (num > 95 && num <= 100):
+    case (num ==='awesome'):
+      weapon =  20;
+      player.weaponQual = 'Awesome';
+    break;
+  }
+  return player.weapon = weapon;
+}
+
+function generatePotion(){
+  let inven = player.inventory;
+  let potionCount = 0;
+  for(i = 0; i<inven.length; i++){
+    if(inven[i] === 'healthPotion'){
+      potionCount += 1;
     }
+  }
+  if (potionCount < 3){
+    inven.push('healthPotion');
   }else{
-    console.log("Alive");
+    console.log('You already have three potions!');
+  }
+
+  console.log(inven);
+};
+
+function usePotion(){
+  if(player.inventory.includes('healthPotion')){
+    player.hp = player.maxHP;
+    player.inventory.shift(0,1)
+  }else{
+    console.log('You have no potions!');
   }
 }
 
-function playerDies(){
-  return console.log("Player Died");
-  orderOfAttack = [];
-}
+function escape(){
 
-
-function test(){
-  generateCharacter('priest');
-  populateFloor();
 }

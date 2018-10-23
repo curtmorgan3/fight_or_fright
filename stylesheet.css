@@ -1,0 +1,143 @@
+
+.field{
+  display: grid;
+  grid-template-columns:  10%  auto  40%  auto  10%;
+  grid-template-rows: 20% auto 20%;
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
+  background-color: grey;
+
+}
+
+/*Top Row*/
+.turn{
+  justify-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column-start: 1;
+  grid-column-end: 6;
+  grid-row-start: 1;
+  grid-row-end:2;
+  height: 100%;
+  width: 80%;
+}
+
+/*Main Stage Area */
+.floor{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  grid-column-start: 2;
+  grid-column-end: 5;
+  grid-row-start: 2;
+  grid-row-end:3;
+  height: 100%;
+  width: 100%;
+}
+.background{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  height:500px;
+  width: 750px;
+}
+.sprite{
+  max-height: 100px;
+  min-height: 75px;
+  max-width: 100px;
+  min-width: 75px;
+  margin: 5px;
+  background-color: aquamarine;
+  font-size: 18px;
+}
+
+/*Left Side*/
+.attackButton{
+  box-sizing: border-box;
+  margin: 10%;
+  height: auto;
+  width: auto;
+  background-color: pink;
+  text-align: center;
+}
+.escapeButton{
+  box-sizing: border-box;
+  margin: 10%;
+  height: auto;
+  width: auto;
+  background-color: blue;
+  text-align: center;
+}
+.actions{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end:3;
+  height: 100%;
+  width: 100%;
+}
+
+/*Right Side*/
+.inventory{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  grid-column-start: 5;
+  grid-column-end: 6;
+  grid-row-start: 2;
+  grid-row-end:3;
+  height: 100%;
+  width: 100%;
+}
+.healthPotion{
+  box-sizing: border-box;
+  margin: 10%;
+  height: auto;
+  width: auto;
+  background-color: red;
+  text-align: center;
+}
+
+/*Bottom Row*/
+.player{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column-start: 1;
+  grid-column-end: 6;
+  grid-row-start: 3;
+  grid-row-end:3;
+  height: 100%;
+  width: 100%;
+}
+.playerStats{
+  box-sizing: border-box;
+  margin-left: 20%;
+  height: auto;
+  width: auto;
+  background-color: green;
+  text-align: center;
+}
+.portrait{
+  box-sizing: border-box;
+  margin: auto;
+  height: 100px;
+  width: 100px;
+  background-color: red;
+  text-align: center;
+}
+.playerWeapon{
+  box-sizing: border-box;
+  margin-right: 20%;
+  height: auto;
+  width: auto;
+  background-color: blue;
+  text-align: center;
+}

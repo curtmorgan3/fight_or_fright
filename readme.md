@@ -153,6 +153,8 @@ For example, to determine a players armor class, add 10 to his speed modifier. H
   4. Experience points are awarded based on the levels of the opponents destroyed
   5. Experience points required to level up increase exponentially at each level
 
+  level = ((level ^2 + level) / 2) - (level *100)
+
   |XP       | Level
   |---------|:--------:
   |0	      |  1
