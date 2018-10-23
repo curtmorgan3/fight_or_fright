@@ -2,7 +2,8 @@ console.log('helper wired');
 
 let player = new Object();
 let monsters = [];
-
+let orderOfAttack = [];
+let floorCount = 0;
 
 function gameStart(){
 
@@ -14,15 +15,51 @@ function populateFloor(){
     generateMonster();
   }
   determineOrder();
+  // populateInventory();
+  // populateStats();
+  beginTurn();
 }
 
 function determineOrder(){
-
+  let roll = randNum(19);
+  let order = [];
+  order.push(player);
+  for (i = 0; i<monsters.length; i++){
+    order.push(monsters[i]);
+  }
+  order.sort(function(a,b) {return (a.init + roll) - (b.init + roll)});
+  orderOfAttack = order.reverse();
+  console.log(orderOfAttack);
 }
 
+function endFloor(){
+  player.hp = player.maxHP;
+  checkXP();
+  floorCount += 1;
+  populateFloor();
+}
 
-
-
+// checkXP();
+// populateInventory();
+// populateStats();
+// playerTurn(){
+//   //attack, escape, or potion
+// }
+function beginTurn(){
+  for (i = 0; i<orderOfAttack.length; i++){
+    let mon = orderOfAttack[i];
+    if (mon === player){
+      //playerTurn();
+      attack(player, mon);
+      console.log("player's turn");
+    }else{
+      let id = mon.id;
+      console.log(`${id.spook} attacked. `);
+      attack(mon, player);
+    }
+  }
+  beginTurn();
+};
 
 
 
@@ -309,7 +346,7 @@ function isAlive(deff){
 }
 
 function playerDies(){
-
+  return console.log("Player Died");
 }
 
 
