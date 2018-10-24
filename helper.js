@@ -1,11 +1,12 @@
-console.log('helper wired');
 
 let player = new Object();
 let monsters = [];
 let orderOfAttack = [];
-let playerPos = 0;
-let playerMiddle = false;
-let playersTurn = false;
+let orderFirst=[];
+let orderLast=[];
+let playerWent = false;
+let playerAlive = true;
+let newFloor = true;
 let floorCount = 1;
 let killCount = 0;
 let countDown = 0;
@@ -15,9 +16,8 @@ let countDown = 0;
 function gameStart(){
   generateCharacter('knight');
   renderStart();
+  renderAll();
   populateFloor();
-  let attackButton = document.querySelector('.attackButton');
-  attackButton.addEventListener('click', selectTarget);
 }
 
 function populateFloor(){
@@ -25,6 +25,7 @@ function populateFloor(){
   for (i=0; i<num; i++){
     generateMonster();
   }
+  newFloor = true;
   determineOrder();
   renderField();
   renderTurnOrder();
@@ -34,74 +35,112 @@ function populateFloor(){
 }
 
 function beginTurn(){
-let playerFirst = isPlayerFirst();
+  console.log('beginTurn');
+  let playerFirst = isPlayerFirst();
+  let playerLast = isPlayerLast();
+  let playerMiddle = isPlayerMiddle();
 
-  if (playerFirst){
-    console.log('player is first');
-    return
-  }else if (!playerFirst) || ((playerFirst) && (!playersTurn)){
-    for (let i =0; i<orderOfAttack.length; i++){
-      let mon = orderOfAttack[i];
-      if (!(mon === player)){
-        console.log(`${mon.name} attacks!`);
-        attack(mon, player);
-      }else if (mon === player){
-        console.log('player in the middle, his turn');
-        playerPos = i;
-        playerMiddle = true;
-        return
+  // The first time, make two arrays--All monsters that go before player
+  // and all that go after
+  if(newFloor){
+
+    if(playerFirst){
+      orderLast = orderOfAttack.slice(1,orderOfAttack.length)
+    }else if(playerLast){
+      for (let i = 0; i<orderOfAttack.length-1; i++){
+        let index = orderOfAttack[i];
+        orderFirst.push(index);
+      }
+    }else if(playerMiddle){
+      let playerPos = 0;
+      for(let i = 0; i < orderOfAttack.length; i++){
+        let index = orderOfAttack[i];
+        if(index === player){
+          playerPos = i;
+        }
+      }
+      for(let i = 0; i<orderOfAttack.length; i++){
+        if(i < playerPos){
+          orderFirst.push(orderOfAttack[i])
+        }else if (i > playerPos){
+          orderLast.push(orderOfAttack[i])
+        }
       }
     }
-  }else if (!(playerFirst) && playerMiddle){
-    for (let i = playerPos + 1; i<orderOfAttack.length; i++){
-      let mon = orderOfAttack[i];
-      console.log(`${mon.name} attacks!`);
-      attack(mon, player);
-      playerMiddle = false;
-      beginTurn();
-    }
   }
+  newFloor = false;
+
+  // Now the attacks should go orderFirst, player, orderLast
+
+    if((playerFirst) && (!playerWent)){
+      console.log('players first');
+      playerWent = true;
+      // }
+    }else if( ( (playerLast) || (playerMiddle) ) && (!playerWent) ){
+      for (let i = 0; i < orderFirst.length; i++){
+        console.log(`${orderFirst[i].name} attacks!`);
+        playerWent = true;
+        attack(orderFirst[i], player);
+      }
+    }else if( (playerFirst) && (playerWent) ){
+      for (let i=0; i < orderLast.length; i++){
+        console.log(`${orderLast[i].name} attacks!`);
+        playerWent = false;
+        attack(orderLast[i], player);
+      }
+    }else if( (playerLast) && (playerWent) ){
+      console.log('last step');
+      for (let i = 0; i < orderFirst.length; i++){
+        console.log(`${orderFirst[i].name} attacks!`);
+        playerWent = false;
+        attack(orderFirst[i], player);
+      }
+    }else if ( (playerMiddle) && (playerWent) ){
+      console.log('last step');
+      for (let i = 0; i < orderLast.length; i++){
+        console.log(`${orderLast[i].name} attacks!`);
+        playerWent = false;
+        attack(orderLast[i], player);
+        //You need recursion here because the orderLast monsters have to move.
+        beginTurn();
+      }
+    }
 };
 
-// TODO: use toggle to break loop, then after player turn return to position player + 1
-
-function playerTurn(){
-  let attackButton = document.querySelector('#attackButton');
-  let potionButton = document.querySelectorAll('#potionButton');
-  let escapeButton = document.querySelector('#escapeButton');
-
-  for(i = 0; i < potionButton.length; i++){
-    potionButton.addEventListener('click', usePotion);
-  }
-  // escapeButton.addEventListener('click', escape);
-
-
-
-}
-
 function endFloor(){
+  orderOfAttack = [];
+  renderAll();
   player.hp = player.maxHP;
   checkXP();
   floorCount += 1;
-  populateFloor();
+  playerReady();
 }
 
-
-
+function playerReady(){
+  let background = document.querySelector('.background');
+  let message = document.createElement('div');
+  message.className = 'message';
+  message.innerText = 'Nice job! Ready for the next floor?'
+  message.addEventListener('click', populateFloor);
+  background.appendChild(message);
+}
 
 function gameOver(){
   console.log(killCount);
   console.log(floorCount);
-  player = new Object();
   monsters = [];
   orderOfAttack = [];
-  return alert("Game Over");
+  alert("Game Over");
+  generateCharacter();
+  renderStart();
+  renderAll();
 }
 
 
 //*************** Rendering ******************************
 function renderStart(){
   let field = document.querySelector('.field');
+
 
   let floor = document.createElement('div');
   floor.className = 'floor';
@@ -149,6 +188,9 @@ function renderField(){
   escapeButton.innerText = 'Escape';
   actions.appendChild(attackButton);
   actions.appendChild(escapeButton);
+
+  // let attackButton = document.querySelector('.attackButton');
+  attackButton.addEventListener('click', selectTarget);
 
   let playerStats = document.createElement('div');
   playerStats.className = 'playerStats';
@@ -213,6 +255,7 @@ function renderInventory(){
     let potion = document.createElement('div');
     potion.className = 'healthPotion';
     potion.innerText = 'Health Potion';
+    potion.addEventListener('click', usePotion);
     inven.appendChild(potion);
   }
 }
@@ -242,7 +285,26 @@ function setAtt(){
 function isPlayerFirst(){
   if(orderOfAttack[0] === player){
     return true;
-  };
+  }else{
+    return false;
+  }
+};
+
+function isPlayerLast(){
+  let index = orderOfAttack.length - 1;
+  if(orderOfAttack[index] === player){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function isPlayerMiddle(){
+  if(!isPlayerFirst() && !isPlayerLast()){
+    return true;
+  }else{
+    return false;
+  }
 }
 
 function getMod(char){ //pass in character.attribute, which is a number value
@@ -371,8 +433,6 @@ function selectTarget(){
         if(targetId === parseInt(mon.id)){
           let target = mon;
           attack(player, target);
-        }else{
-          console.log('ID not found');
         }
       }
     });
@@ -386,10 +446,14 @@ function attack(off, deff){
   }else{
     console.log("miss");
   }
-  if (off === player){
-    playersTurn = false;
+  if ( (off === player) && (orderOfAttack >= 1) ){
+    // playerWent = true;
+    console.log('attack() callback');
+    beginTurn();
+  }else if (orderOfAttack <= 1){
+    return endFloor();
   }
-  beginTurn();
+
 }
 
 function calcDam(off, deff){
@@ -412,7 +476,7 @@ function isAlive(deff){
     if(isPlayer){
       playerDies();
     }else{
-      return isKilled(deff);
+      isKilled(deff);
     }
   }else{
     console.log("Alive");
@@ -422,6 +486,7 @@ function isAlive(deff){
 function playerDies(){
   console.log("Player Died");
   orderOfAttack = [];
+  playerAlive = false;
   gameOver();
 }
 
@@ -435,11 +500,16 @@ function isKilled(char){
       console.log(`${monsters[i].name} slain!`);
       monsters.splice(i,1);
       orderOfAttack.splice(i,1);
+      orderFirst.splice(i,1);
+      orderLast.splice(i,1);
       if(orderOfAttack.length === 1){
         orderOfAttack = [];
       }
       killCount += 1;
     }
+  }
+  if(orderOfAttack.length === 1){
+    return endFloor();
   }
   dropLoot();
   checkXP();

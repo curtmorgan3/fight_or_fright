@@ -54,7 +54,15 @@
   background-color: aquamarine;
   font-size: 18px;
 }
-
+.message{
+  max-height: 100px;
+  min-height: 75px;
+  max-width: 100px;
+  min-width: 75px;
+  margin: 5px;
+  background-color: white;
+  font-size: 18px;
+}
 /*Left Side*/
 .attackButton{
   box-sizing: border-box;
