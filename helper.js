@@ -75,20 +75,22 @@ function beginTurn(){
     if((playerFirst) && (!playerWent)){
       console.log('players first');
       playerWent = true;
-      // }
     }else if( ( (playerLast) || (playerMiddle) ) && (!playerWent) ){
+      console.log('player last or middle and didnt go');
       for (let i = 0; i < orderFirst.length; i++){
         console.log(`${orderFirst[i].name} attacks!`);
         playerWent = true;
         attack(orderFirst[i], player);
       }
     }else if( (playerFirst) && (playerWent) ){
+      console.log('players first and already went');
       for (let i=0; i < orderLast.length; i++){
         console.log(`${orderLast[i].name} attacks!`);
         playerWent = false;
         attack(orderLast[i], player);
       }
     }else if( (playerLast) && (playerWent) ){
+      console.log('players last and already went');
       console.log('last step');
       for (let i = 0; i < orderFirst.length; i++){
         console.log(`${orderFirst[i].name} attacks!`);
@@ -96,7 +98,7 @@ function beginTurn(){
         attack(orderFirst[i], player);
       }
     }else if ( (playerMiddle) && (playerWent) ){
-      console.log('last step');
+      console.log('players middle and went');
       for (let i = 0; i < orderLast.length; i++){
         console.log(`${orderLast[i].name} attacks!`);
         playerWent = false;
@@ -306,8 +308,8 @@ function isPlayerMiddle(){
     return false;
   }
 }
-
-function getMod(char){ //pass in character.attribute, which is a number value
+//pass in character.attribute, which is a number value
+function getMod(char){
   let mod = -5;
   for (i = 1; i<char; i+= 2){
     mod += 1;
@@ -326,7 +328,7 @@ function determineOrder(){
   orderOfAttack = order.reverse();
   console.log(orderOfAttack);
 }
-
+//pass in type for cosutme, leave blank for random
 function generateCharacter(costume){
   //create a player object, add attributes
   let name = 'Curt'
@@ -369,8 +371,8 @@ function generateCharacter(costume){
   };
   return player;
 }
-
-function generateMonster(specific){ //pass in type for specific, leave blank for random
+//pass in type for specific, leave blank for random
+function generateMonster(specific){
   let monster = {};
   let ranType = ['skeleton','ghost','vampire','zombie','werewolf']
   let type;
@@ -421,6 +423,9 @@ function generateMonster(specific){ //pass in type for specific, leave blank for
   monsters.push(monster);
 }
 
+
+//***************** Combat **********************************
+//Wire up sprites to their monster
 function selectTarget(){
   console.log('Select Target');
   let floor = document.querySelector('.floor');
@@ -438,24 +443,32 @@ function selectTarget(){
     });
   }
 }
-
+//Attack part one
 function attack(off, deff){
   let attack = randNum(20) + getMod(off.dex);
-  if (attack >= deff.ac){
-    calcDam(off, deff);
-  }else{
-    console.log("miss");
-  }
-  if ( (off === player) && (orderOfAttack >= 1) ){
-    // playerWent = true;
-    console.log('attack() callback');
-    beginTurn();
-  }else if (orderOfAttack <= 1){
+
+  if ( (off === player) && (orderOfAttack.length > 1) ){
+    console.log('off is player and OOA >1');
+    if (attack >= deff.ac){
+      calcDam(off, deff);
+      beginTurn();
+    }else{
+      console.log("miss");
+      beginTurn();
+    }
+  }else if (orderOfAttack.length <= 1){
+    console.log('OOA <=1');
     return endFloor();
+  }else {
+    console.log('off is monster');
+    if (attack >= deff.ac){
+      calcDam(off, deff);
+    }else{
+      console.log("miss");
+    }
   }
-
-}
-
+};
+//Attack part two
 function calcDam(off, deff){
   let damage = randNum(off.weapon) + getMod(off.str);
   if (damage > 0){
@@ -467,7 +480,7 @@ function calcDam(off, deff){
   console.log(`Defender HP: ${deff.hp}`);
   isAlive(deff);
 }
-
+//Attack part three
 function isAlive(deff){
   let hp = deff.hp;
   let id = deff.id;
@@ -482,14 +495,14 @@ function isAlive(deff){
     console.log("Alive");
   }
 }
-
+//Player Dies -> gameOver()
 function playerDies(){
   console.log("Player Died");
   orderOfAttack = [];
   playerAlive = false;
   gameOver();
 }
-
+//Monster Dies part one
 function isKilled(char){
   let xp = (char.level * randNum(800) + (randNum(100) * getMod(player.luck)) );
   player.xp += xp;
@@ -516,7 +529,7 @@ function isKilled(char){
   renderAll();
 
 }
-
+//Monster Dies part two
 function checkXP(){
   let xp = player.xp;
   let currentLevel = player.level;
@@ -531,7 +544,7 @@ function checkXP(){
     return console.log("Not enough XP");
   }
 };
-
+//If players has enough XP
 function levelUp(att){ //pass the skill point the user selects
   let costume = player.costume;
   console.log(costume);
@@ -578,7 +591,7 @@ function levelUp(att){ //pass the skill point the user selects
   player.level += 1;
 
 }
-
+//Monster Dies part three
 function dropLoot(){ // 75% chance of dropping weapon, 25% drop potion
   console.log("loot dropped");
   let num = randNum(100);
@@ -588,8 +601,9 @@ function dropLoot(){ // 75% chance of dropping weapon, 25% drop potion
     generatePotion();
   };
 };
-
-function generateWeapon(type){ //pass type or leave blank for random based on player's luck
+//Loot weapon
+//pass type or leave blank for random based on player's luck
+function generateWeapon(type){
   let weapon;
   let num;
   if(type){
@@ -633,7 +647,7 @@ function generateWeapon(type){ //pass type or leave blank for random based on pl
   }
   return player.weapon = weapon;
 }
-
+//Loot potion
 function generatePotion(){
   let inven = player.inventory;
   let potionCount = 0;
@@ -650,7 +664,7 @@ function generatePotion(){
 
   console.log(inven);
 };
-
+//Use potion
 function usePotion(){
   if(player.inventory.includes('healthPotion')){
     player.hp = player.maxHP;
@@ -659,7 +673,7 @@ function usePotion(){
     console.log('You have no potions!');
   }
 }
-
+// Escpae
 function escape(){
 
 }
