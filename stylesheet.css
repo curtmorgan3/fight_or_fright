@@ -45,6 +45,59 @@
   height:500px;
   width: 750px;
 }
+.floorSign{
+  display: flex;
+  flex-direction: column;
+
+}
+.welcome{
+  box-sizing:border-box;
+  margin: auto;
+  height: 100px;
+  width: 300px;
+  text-align: center;
+}
+
+.knight{
+  box-sizing: border-box;
+  margin: auto;
+  height: 100px;
+  width: 100px;
+  background-color: red;
+  text-align: center;
+}
+.priest{
+  box-sizing: border-box;
+  margin: auto;
+  height: 100px;
+  width: 100px;
+  background-color: blue;
+  text-align: center;
+}
+.ninja{
+  box-sizing: border-box;
+  margin: auto;
+  height: 100px;
+  width: 100px;
+  background-color: black;
+  text-align: center;
+}
+.gambler{
+  box-sizing: border-box;
+  margin: auto;
+  height: 100px;
+  width: 100px;
+  background-color: orange;
+  text-align: center;
+}
+.rogue{
+  box-sizing: border-box;
+  margin: auto;
+  height: 100px;
+  width: 100px;
+  background-color: purple;
+  text-align: center;
+}
 .sprite{
   max-height: 100px;
   min-height: 75px;
@@ -55,6 +108,8 @@
   font-size: 18px;
 }
 .message{
+  display: flex;
+  flex-direction: column;
   max-height: 100px;
   min-height: 75px;
   max-width: 100px;

@@ -10,14 +10,41 @@ let newFloor = true;
 let floorCount = 1;
 let killCount = 0;
 let countDown = 0;
+let characterCostume;
+let playerName = '';
+let canLevelUp = 0;
 
 
 //************** Game Logic *****************************
 function gameStart(){
-  generateCharacter('knight');
   renderStart();
-  renderAll();
-  populateFloor();
+  renderWelcome();
+}
+
+function renderWelcome(){
+  let background = document.querySelector('.background');
+  let welcome = document.createElement('div');
+  welcome.className = 'welcome';
+  welcome.innerHTML = `
+    <h2>Haunted House</h2> <br/>
+    <h3>Choose your character</h3>
+  `
+  background.appendChild(welcome)
+  let costumes = ['knight','rogue','priest','ninja','gambler'];
+
+  for (i = 0; i<costumes.length; i++){
+    let costume = document.createElement('div');
+    costume.className = costumes[i];
+    costume.addEventListener('click', chooseCharacter);
+    background.appendChild(costume);
+  }
+
+};
+
+function chooseCharacter(){
+  characterCostume = this.className;
+  generateCharacter(characterCostume);
+  renderNameScreen();
 }
 
 function populateFloor(){
@@ -26,11 +53,15 @@ function populateFloor(){
     generateMonster();
   }
   newFloor = true;
+  // let field = document.querySelector('.field');
+  // while(field.firstChild){
+  //   field.removeChild(field.firstChild);
+  // }
+  clearScreen();
+
+  // renderStart();
   determineOrder();
-  renderField();
-  renderTurnOrder();
-  renderFloor();
-  renderInventory();
+  renderAll();
   beginTurn();
 }
 
@@ -71,7 +102,7 @@ function beginTurn(){
   newFloor = false;
 
   // Now the attacks should go orderFirst, player, orderLast
-
+  if(orderOfAttack.length > 1){
     if((playerFirst) && (!playerWent)){
       console.log('players first');
       playerWent = true;
@@ -107,24 +138,64 @@ function beginTurn(){
         beginTurn();
       }
     }
+  }
 };
 
 function endFloor(){
+  console.log('end floor');
   orderOfAttack = [];
-  renderAll();
-  player.hp = player.maxHP;
+  dropLoot();
+  clearScreen();
   checkXP();
+  player.hp = player.maxHP;
   floorCount += 1;
-  playerReady();
+  if(canLevelUp > 0){
+    renderLevelUp();
+  }else{
+    renderEnter();
+  }
+
 }
 
-function playerReady(){
-  let background = document.querySelector('.background');
-  let message = document.createElement('div');
-  message.className = 'message';
-  message.innerText = 'Nice job! Ready for the next floor?'
-  message.addEventListener('click', populateFloor);
-  background.appendChild(message);
+function renderLevelUp(){
+  console.log('render level up');
+  clearScreen();
+  let background = document.createElement('div');
+  let floor = document.querySelector('.floor');
+  background.className = 'background';
+  floor.appendChild(background);
+
+
+  //Level Up, pick attribute
+  let levelUpScreen = document.createElement('div');
+  levelUpScreen.class = 'message';
+  levelUpScreen.innerHTML = `
+    <h2>You leveled up!</h2> <h2>Level: ${player.level}<h2>
+    <h3>Choose an attribute to increase by 1 point. If you choose your class
+        attribute, it will increase by 2!</h3>
+    <button id = 'str'>Strength</button>
+    <button id ='speed'>Speed</button>
+    <button id ='dex'>Dexterity</button>
+    <button id ='fort'>Fortitude</button>
+    <button id ='luck'>Luck</button>
+
+    `
+    background.appendChild(levelUpScreen);
+
+    let str = document.getElementById('str');
+    str.addEventListener('click', chooseAtt);
+    let speed = document.getElementById('speed');
+    speed.addEventListener('click', chooseAtt);
+    let dex = document.getElementById('dex');
+    dex.addEventListener('click', chooseAtt);
+    let fort = document.getElementById('fort');
+    fort.addEventListener('click', chooseAtt);
+    let luck = document.getElementById('luck');
+    luck.addEventListener('click', chooseAtt);
+
+    function chooseAtt(){
+      levelUp(this.id);
+    }
 }
 
 function gameOver(){
@@ -140,6 +211,7 @@ function gameOver(){
 
 
 //*************** Rendering ******************************
+//Creates all containers and appends them to the field
 function renderStart(){
   let field = document.querySelector('.field');
 
@@ -165,20 +237,21 @@ function renderStart(){
   field.appendChild(inventory);
 }
 
+//Renders the actions column and player row
 function renderField(){
   let actions = document.querySelector('.actions');
   let playerRow = document.querySelector('.player');
 
-  if(actions.firstChild){
-    while(actions.firstChild){
-      actions.removeChild(actions.firstChild);
-    }
-  }
-  if(playerRow.firstChild){
-    while(playerRow.firstChild){
-      playerRow.removeChild(playerRow.firstChild);
-    }
-  }
+  // if(actions.firstChild){
+  //   while(actions.firstChild){
+  //     actions.removeChild(actions.firstChild);
+  //   }
+  // }
+  // if(playerRow.firstChild){
+  //   while(playerRow.firstChild){
+  //     playerRow.removeChild(playerRow.firstChild);
+  //   }
+  // }
 
 
 
@@ -214,13 +287,14 @@ function renderField(){
 
 }
 
+//Renders the turn order row
 function renderTurnOrder(){
   let turnOrder = document.querySelector('.turn');
-  if(orderOfAttack.length >= 0){
-    while(turnOrder.firstChild){
-      turnOrder.removeChild(turnOrder.firstChild);
-    }
-  }
+  // if(orderOfAttack.length >= 0){
+  //   while(turnOrder.firstChild){
+  //     turnOrder.removeChild(turnOrder.firstChild);
+  //   }
+  // }
   for(let i=0; i < orderOfAttack.length; i++){
     let pawn = document.createElement('div');
     pawn.className = 'portrait';
@@ -229,13 +303,17 @@ function renderTurnOrder(){
   }
 }
 
+//Renders the background and sprites of enemies
 function renderFloor(){
-  let background = document.querySelector('.background');
-  if(orderOfAttack.length <= 1){
-    while(background.firstChild){
-      background.removeChild(background.firstChild)
-    }
-  }
+  let background = document.createElement('div')
+  background.className = 'background'
+  let floor = document.querySelector('.floor')
+  floor.appendChild(background);
+  // if(orderOfAttack.length <= 1){
+  //   while(background.firstChild){
+  //     background.removeChild(background.firstChild)
+  //   }
+  // }
 
   for(let i=0; i < monsters.length; i++){
     let mon = document.createElement('div');
@@ -246,13 +324,14 @@ function renderFloor(){
   }
 }
 
+//Renders the inventory column
 function renderInventory(){
   let inven = document.querySelector('.inventory');
-  if(player.inventory.length <= 1){
-    while(inven.firstChild){
-      inven.removeChild(inven.firstChild)
-    }
-  }
+  // if(player.inventory.length <= 1){
+  //   while(inven.firstChild){
+  //     inven.removeChild(inven.firstChild)
+  //   }
+  // }
   for (i=0; i < player.inventory.length; i++){
     let potion = document.createElement('div');
     potion.className = 'healthPotion';
@@ -262,12 +341,86 @@ function renderInventory(){
   }
 }
 
+//Renders the above 4
 function renderAll(){
   renderTurnOrder();
   renderFloor();
   renderField();
   renderInventory();
 
+
+}
+
+function renderNameScreen(){
+
+  let background = document.querySelector('.background');
+  while(background.firstChild){
+    background.removeChild(background.firstChild);
+  }
+  let nameSelect = document.createElement('div');
+  nameSelect.className = 'welcome';
+  nameSelect.innerHTML = `
+    <h2>What is your name, ${characterCostume}?</h2>
+    <input id = 'input'></input>
+    <button id = 'button'>Submit</button>
+  `
+  background.appendChild(nameSelect);
+  let button = document.getElementById('button');
+  button.addEventListener('click', storeName);
+
+  function storeName(){
+    let input = document.getElementById('input').value;
+    playerName = input;
+    player.name = input;
+    renderEnter();
+  }
+}
+
+function renderEnter(){
+  clearScreen();
+  let background = document.createElement('div');
+  let floor = document.querySelector('.floor');
+  background.className = 'background';
+  floor.appendChild(background);
+
+
+
+  let floorSign = document.createElement('div');
+  floorSign.className = 'floorSign';
+  floorSign.innerHTML = `
+    <h2>Prepare for horror!</h2> </br>
+    <h2>Floor: ${floorCount}</h2> <button id ='beginFloor'</button>Enter...</br>
+    <h3>${playerName}, ${characterCostume}, Level: ${player.level}</h3> </br>
+    <h4>Strength: ${player.str} / Speed: ${player.speed} / Dexterity: ${player.dex}</h4> </br>
+    <h4>Fortitude: ${player.fort} / Luck: ${player.luck} / Max Health: ${player.maxHP}</h4> </br>
+    <h4>Weapon: ${player.weaponName} / Quality: ${player.weaponQual} / Damage: 1- ${player.weapon}</h4>
+
+  `
+  background.appendChild(floorSign);
+  let button = document.getElementById('beginFloor');
+  button.addEventListener('click', populateFloor);
+
+};
+
+//Leaves all containers but empties them
+function clearScreen(){
+  let field = document.querySelector('.field');
+
+  let floor = document.querySelector('.floor')
+  let inventory = document.querySelector('.inventory')
+  let actions = document.querySelector('.actions')
+  let player = document.querySelector('.player')
+  let turn = document.querySelector('.turn')
+
+  let all = [floor,inventory,actions,player,turn];
+
+  for(i = 0; i < all.length; i++){
+    let section = all[i];
+    console.log(section);
+    while(section.firstChild){
+      section.removeChild(section.firstChild);
+    }
+  }
 
 }
 
@@ -331,9 +484,8 @@ function determineOrder(){
 //pass in type for cosutme, leave blank for random
 function generateCharacter(costume){
   //create a player object, add attributes
-  let name = 'Curt'
-  // TODO: Capture player name global
-  player.name = `${name}`;
+
+  player.name = playerName;
   player.level = 1;
   player.xp = 0;
   player.str = setAtt();
@@ -341,7 +493,7 @@ function generateCharacter(costume){
   player.speed = setAtt();
   player.fort = setAtt();
   player.luck = setAtt();
-  player.maxHP = setAtt() + getMod(player.fort) + 10;
+  player.maxHP = setAtt() + getMod(player.fort) + 30;
   player.ac = getMod(player.speed) + 10;
   player.costume = costume;
   player.weapon = 6;
@@ -506,6 +658,7 @@ function playerDies(){
 function isKilled(char){
   let xp = (char.level * randNum(800) + (randNum(100) * getMod(player.luck)) );
   player.xp += xp;
+  console.log('+'+xp+'XP');
   let id = char.id;
 
   for (i = 0; i<monsters.length; i++){
@@ -517,16 +670,12 @@ function isKilled(char){
       orderLast.splice(i,1);
       if(orderOfAttack.length === 1){
         orderOfAttack = [];
+        killCount += 1;
+        return endFloor();
       }
       killCount += 1;
     }
   }
-  if(orderOfAttack.length === 1){
-    return endFloor();
-  }
-  dropLoot();
-  checkXP();
-  renderAll();
 
 }
 //Monster Dies part two
@@ -536,9 +685,10 @@ function checkXP(){
   let nextLevel = currentLevel + 1;
 
   let requiredXP = ( ( ( (nextLevel * nextLevel) + nextLevel) / 2) * 100) - (nextLevel * 100);
-  console.log(requiredXP);
+
   if (xp >= requiredXP){
-    levelUp('str');
+    canLevelUp += 1;
+    player.level += 1;
     checkXP();
   }else{
     return console.log("Not enough XP");
@@ -546,6 +696,8 @@ function checkXP(){
 };
 //If players has enough XP
 function levelUp(att){ //pass the skill point the user selects
+  console.log('Level Up');
+  canLevelUp --;
   let costume = player.costume;
   console.log(costume);
   switch(att){
@@ -588,7 +740,12 @@ function levelUp(att){ //pass the skill point the user selects
 
   player.maxHP += randNum(6) + getMod(player.fort);
   player.ac = getMod(player.speed) + 10;
-  player.level += 1;
+  // player.level += 1;
+  if(canLevelUp > 0){
+    renderLevelUp();
+  }else {
+    renderEnter();
+  }
 
 }
 //Monster Dies part three
