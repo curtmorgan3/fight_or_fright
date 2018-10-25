@@ -14,6 +14,8 @@ let characterCostume;
 let playerName = '';
 let canLevelUp = 0;
 
+// TODO:
+
 
 //************** Game Logic *****************************
 function gameStart(){
@@ -34,7 +36,9 @@ function renderWelcome(){
 
   for (i = 0; i<costumes.length; i++){
     let costume = document.createElement('div');
-    costume.className = costumes[i];
+    costume.className = 'portrait';
+    costume.style.backgroundImage = `url(images/${costumes[i]}.png)`
+    costume.id = costumes[i];
     costume.addEventListener('click', chooseCharacter);
     background.appendChild(costume);
   }
@@ -42,7 +46,7 @@ function renderWelcome(){
 };
 
 function chooseCharacter(){
-  characterCostume = this.className;
+  characterCostume = this.id;
   generateCharacter(characterCostume);
   renderNameScreen();
 }
@@ -53,13 +57,8 @@ function populateFloor(){
     generateMonster();
   }
   newFloor = true;
-  // let field = document.querySelector('.field');
-  // while(field.firstChild){
-  //   field.removeChild(field.firstChild);
-  // }
   clearScreen();
 
-  // renderStart();
   determineOrder();
   renderAll();
   beginTurn();
@@ -157,56 +156,35 @@ function endFloor(){
 
 }
 
-function renderLevelUp(){
-  console.log('render level up');
-  clearScreen();
-  let background = document.createElement('div');
-  let floor = document.querySelector('.floor');
-  background.className = 'background';
-  floor.appendChild(background);
 
-
-  //Level Up, pick attribute
-  let levelUpScreen = document.createElement('div');
-  levelUpScreen.class = 'message';
-  levelUpScreen.innerHTML = `
-    <h2>You leveled up!</h2> <h2>Level: ${player.level}<h2>
-    <h3>Choose an attribute to increase by 1 point. If you choose your class
-        attribute, it will increase by 2!</h3>
-    <button id = 'str'>Strength</button>
-    <button id ='speed'>Speed</button>
-    <button id ='dex'>Dexterity</button>
-    <button id ='fort'>Fortitude</button>
-    <button id ='luck'>Luck</button>
-
-    `
-    background.appendChild(levelUpScreen);
-
-    let str = document.getElementById('str');
-    str.addEventListener('click', chooseAtt);
-    let speed = document.getElementById('speed');
-    speed.addEventListener('click', chooseAtt);
-    let dex = document.getElementById('dex');
-    dex.addEventListener('click', chooseAtt);
-    let fort = document.getElementById('fort');
-    fort.addEventListener('click', chooseAtt);
-    let luck = document.getElementById('luck');
-    luck.addEventListener('click', chooseAtt);
-
-    function chooseAtt(){
-      levelUp(this.id);
-    }
-}
 
 function gameOver(){
-  console.log(killCount);
-  console.log(floorCount);
+  clearScreen();
   monsters = [];
   orderOfAttack = [];
-  alert("Game Over");
-  generateCharacter();
-  renderStart();
-  renderAll();
+  let field = document.querySelector('.field');
+  let background = document.createElement('div');
+  background.className = 'background';
+  field.appendChild(background);
+
+  let gameOver = document.createElement('div');
+  gameOver.className = 'gameOver';
+
+  gameOver.innerHTML = `
+    <h1>Game Over</h1>
+    <h3>Floors Cleared: ${floorCount - 1}</h3>
+    <h3>Monsters Killed: ${killCount}</h3>
+    <button id = 'playAgain'>Play Again<button>
+    <h3>${playerName}, ${characterCostume}, Level: ${player.level} <br>
+    <h4>Strength: ${player.str} / Speed: ${player.speed} / Dexterity: ${player.dex}<br>
+    <h4>Fortitude: ${player.fort} / Luck: ${player.luck} / Max Health: ${player.maxHP}<br>
+    <h4>Weapon: ${player.weaponName} / Quality: ${player.weaponQual} / Damage: 1- ${player.weapon}</h4>
+
+  `
+  background.appendChild(gameOver);
+  let button = document.getElementById('playAgain');
+  button.addEventListener('click', gameStart);
+
 }
 
 
@@ -242,19 +220,6 @@ function renderField(){
   let actions = document.querySelector('.actions');
   let playerRow = document.querySelector('.player');
 
-  // if(actions.firstChild){
-  //   while(actions.firstChild){
-  //     actions.removeChild(actions.firstChild);
-  //   }
-  // }
-  // if(playerRow.firstChild){
-  //   while(playerRow.firstChild){
-  //     playerRow.removeChild(playerRow.firstChild);
-  //   }
-  // }
-
-
-
   let attackButton = document.createElement('div');
   attackButton.className = 'attackButton';
   attackButton.innerText = 'Attack';
@@ -264,8 +229,12 @@ function renderField(){
   actions.appendChild(attackButton);
   actions.appendChild(escapeButton);
 
-  // let attackButton = document.querySelector('.attackButton');
   attackButton.addEventListener('click', selectTarget);
+
+  let playerHealth = document.createElement('div');
+  playerHealth.className = 'playerStats';
+  playerHealth.innerText = `Health: ${player.hp} / ${player.maxHP}`
+  playerRow.appendChild(playerHealth);
 
   let playerStats = document.createElement('div');
   playerStats.className = 'playerStats';
@@ -276,7 +245,8 @@ function renderField(){
 
   let playerPortrait = document.createElement('div');
   playerPortrait.className = 'portrait';
-  playerPortrait.innerText = player.name;
+  // playerPortrait.innerText = player.name;
+  playerPortrait.style.backgroundImage = `url(images/${player.costume}.png)`
   playerRow.appendChild(playerPortrait);
 
   let weaponStats = document.createElement('div');
@@ -285,20 +255,29 @@ function renderField(){
                            ${player.weaponQual}: 1-${player.weapon} damange`;
   playerRow.appendChild(weaponStats);
 
+  let weaponIcon = document.createElement('div');
+  weaponIcon.className = 'portrait';
+  let qual = player.weaponQual.toLowerCase();
+  weaponIcon.style.backgroundImage = `url(images/${qual}.png)`;
+  playerRow.appendChild(weaponIcon);
+
 }
 
 //Renders the turn order row
 function renderTurnOrder(){
   let turnOrder = document.querySelector('.turn');
-  // if(orderOfAttack.length >= 0){
-  //   while(turnOrder.firstChild){
-  //     turnOrder.removeChild(turnOrder.firstChild);
-  //   }
-  // }
+
   for(let i=0; i < orderOfAttack.length; i++){
     let pawn = document.createElement('div');
     pawn.className = 'portrait';
-    pawn.innerText = orderOfAttack[i].name;
+    let name;
+    if(orderOfAttack[i] === player){
+      name = orderOfAttack[i].costume;
+    }else{
+      name = orderOfAttack[i].name;
+    }
+    pawn.style.backgroundImage = `url(images/${name}.png)`;
+    // pawn.innerText = orderOfAttack[i].name;
     turnOrder.appendChild(pawn);
   }
 }
@@ -306,20 +285,20 @@ function renderTurnOrder(){
 //Renders the background and sprites of enemies
 function renderFloor(){
   let background = document.createElement('div')
-  background.className = 'background'
+  background.className = 'background';
+
+
   let floor = document.querySelector('.floor')
   floor.appendChild(background);
-  // if(orderOfAttack.length <= 1){
-  //   while(background.firstChild){
-  //     background.removeChild(background.firstChild)
-  //   }
-  // }
+  floor.style.backgroundImage = 'url(images/house_2.jpg)';
 
   for(let i=0; i < monsters.length; i++){
     let mon = document.createElement('div');
+    let name = monsters[i].name;
     mon.className = 'sprite';
+    mon.style.backgroundImage = `url(images/${name}.png)`;
     mon.id = monsters[i].id;
-    mon.innerText = monsters[i].name;
+    // mon.innerText = monsters[i].name;
     background.appendChild(mon);
   }
 }
@@ -327,15 +306,12 @@ function renderFloor(){
 //Renders the inventory column
 function renderInventory(){
   let inven = document.querySelector('.inventory');
-  // if(player.inventory.length <= 1){
-  //   while(inven.firstChild){
-  //     inven.removeChild(inven.firstChild)
-  //   }
-  // }
+  inven.innerHTML = `<h3>Inventory</h3>`
   for (i=0; i < player.inventory.length; i++){
     let potion = document.createElement('div');
     potion.className = 'healthPotion';
-    potion.innerText = 'Health Potion';
+    // potion.innerText = 'Health Potion';
+    potion.style.backgroundImage = `url(images/healthPotion.png)`
     potion.addEventListener('click', usePotion);
     inven.appendChild(potion);
   }
@@ -390,11 +366,10 @@ function renderEnter(){
   floorSign.innerHTML = `
     <h2>Prepare for horror!</h2> </br>
     <h2>Floor: ${floorCount}</h2> <button id ='beginFloor'</button>Enter...</br>
-    <h3>${playerName}, ${characterCostume}, Level: ${player.level}</h3> </br>
-    <h4>Strength: ${player.str} / Speed: ${player.speed} / Dexterity: ${player.dex}</h4> </br>
-    <h4>Fortitude: ${player.fort} / Luck: ${player.luck} / Max Health: ${player.maxHP}</h4> </br>
-    <h4>Weapon: ${player.weaponName} / Quality: ${player.weaponQual} / Damage: 1- ${player.weapon}</h4>
-
+    <h3>${playerName}, ${characterCostume}, Level: ${player.level} <br>
+        Strength: ${player.str} / Speed: ${player.speed} / Dexterity: ${player.dex} <br>
+        Fortitude: ${player.fort} / Luck: ${player.luck} / Max Health: ${player.maxHP} <br>
+        Weapon: ${player.weaponName} / Quality: ${player.weaponQual} / Damage: 1- ${player.weapon}</h3>
   `
   background.appendChild(floorSign);
   let button = document.getElementById('beginFloor');
@@ -402,6 +377,46 @@ function renderEnter(){
 
 };
 
+function renderLevelUp(){
+  console.log('render level up');
+  clearScreen();
+  let background = document.createElement('div');
+  let floor = document.querySelector('.floor');
+  background.className = 'background';
+  floor.appendChild(background);
+
+
+  //Level Up, pick attribute
+  let levelUpScreen = document.createElement('div');
+  levelUpScreen.class = 'message';
+  levelUpScreen.innerHTML = `
+    <h2>You leveled up!</h2> <h2>Level: ${player.level}<h2>
+    <h3>Choose an attribute to increase by 1 point. If you choose your class
+        attribute, it will increase by 2!</h3>
+    <button id = 'str'>Strength</button>
+    <button id ='speed'>Speed</button>
+    <button id ='dex'>Dexterity</button>
+    <button id ='fort'>Fortitude</button>
+    <button id ='luck'>Luck</button>
+
+    `
+    background.appendChild(levelUpScreen);
+
+    let str = document.getElementById('str');
+    str.addEventListener('click', chooseAtt);
+    let speed = document.getElementById('speed');
+    speed.addEventListener('click', chooseAtt);
+    let dex = document.getElementById('dex');
+    dex.addEventListener('click', chooseAtt);
+    let fort = document.getElementById('fort');
+    fort.addEventListener('click', chooseAtt);
+    let luck = document.getElementById('luck');
+    luck.addEventListener('click', chooseAtt);
+
+    function chooseAtt(){
+      levelUp(this.id);
+    }
+}
 //Leaves all containers but empties them
 function clearScreen(){
   let field = document.querySelector('.field');
@@ -625,6 +640,8 @@ function calcDam(off, deff){
   let damage = randNum(off.weapon) + getMod(off.str);
   if (damage > 0){
     deff.hp -= damage;
+    clearScreen();
+    renderAll();
   }else{
     damage = 0;
   }
@@ -775,6 +792,7 @@ function generateWeapon(type){
     case (num ==='poor'):
       weapon =  6;
       player.weaponQual = 'Poor';
+      player.weaponName = 'Wooden Sword'
       // TODO: Generate random weapon name
     break;
     //51-70
@@ -782,24 +800,28 @@ function generateWeapon(type){
     case (num ==='decent'):
       weapon =  8;
       player.weaponQual = 'Decent';
+      player.weaponName = 'Small Dagger'
     break;
     //71-85
     case (num > 70 && num <= 85):
     case (num ==='good'):
       weapon =  12;
       player.weaponQual = 'Good';
+      player.weaponName = 'Iron Sword'
     break;
     //86-95
     case (num > 85 && num <= 95):
     case (num === 'great'):
       weapon =  16;
       player.weaponQual = 'Great';
+      player.weaponName = 'Axe'
     break;
     //96-100
     case (num > 95 && num <= 100):
     case (num ==='awesome'):
       weapon =  20;
       player.weaponQual = 'Awesome';
+      player.weaponName = 'Double Axe'
     break;
   }
   return player.weapon = weapon;
@@ -825,7 +847,8 @@ function generatePotion(){
 function usePotion(){
   if(player.inventory.includes('healthPotion')){
     player.hp = player.maxHP;
-    player.inventory.shift(0,1)
+    player.inventory.shift(0,1);
+    renderInventory();
   }else{
     console.log('You have no potions!');
   }

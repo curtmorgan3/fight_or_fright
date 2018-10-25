@@ -1,4 +1,12 @@
 
+*{
+  /* font-family: 'Creepster', cursive;
+  font-size: 20px; */
+  font-family: 'Amatic SC', cursive;
+      /* font-weight: 700; */
+      /* line-height: 5px; */
+      font-size:25px;
+}
 .field{
   display: grid;
   grid-template-columns:  10%  auto  40%  auto  10%;
@@ -16,11 +24,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
+  border: 2px solid black;
   grid-column-start: 1;
   grid-column-end: 6;
   grid-row-start: 1;
   grid-row-end:2;
-  height: 100%;
+  height: 100px;
   width: 80%;
 }
 
@@ -36,18 +46,38 @@
   grid-row-end:3;
   height: 100%;
   width: 100%;
+  /* background-size: cover; */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color:rgba(255,255,255,0.2);
+  background-blend-mode: lighten;
+
 }
+
+#beginFloor{
+  box-sizing: border-box;
+  border-radius: 20%;
+  background-color: white;
+  border: 2px, black, solid;
+  height: 50px;
+  width: auto;
+}
+
 .background{
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  height:500px;
-  width: 750px;
+  height:575px;
+  width: 850px;
 }
+
 .floorSign{
   display: flex;
   flex-direction: column;
+  font-size: 18px;
+  /* color: grey; */
+  font-weight: bold;
 
 }
 .welcome{
@@ -57,55 +87,29 @@
   width: 300px;
   text-align: center;
 }
+#playAgain{
+  box-sizing: border-box;
+  border: 2px black solid;
+  border-radius: 20%;
+}
+.gameOver{
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
 
-.knight{
-  box-sizing: border-box;
-  margin: auto;
-  height: 100px;
-  width: 100px;
-  background-color: red;
-  text-align: center;
-}
-.priest{
-  box-sizing: border-box;
-  margin: auto;
-  height: 100px;
-  width: 100px;
-  background-color: blue;
-  text-align: center;
-}
-.ninja{
-  box-sizing: border-box;
-  margin: auto;
-  height: 100px;
-  width: 100px;
-  background-color: black;
-  text-align: center;
-}
-.gambler{
-  box-sizing: border-box;
-  margin: auto;
-  height: 100px;
-  width: 100px;
-  background-color: orange;
-  text-align: center;
-}
-.rogue{
-  box-sizing: border-box;
-  margin: auto;
-  height: 100px;
-  width: 100px;
-  background-color: purple;
-  text-align: center;
-}
 .sprite{
-  max-height: 100px;
-  min-height: 75px;
-  max-width: 100px;
-  min-width: 75px;
+  max-height: 150px;
+  min-height: 150px;
+  max-width: 150px;
+  min-width: 150px;
   margin: 5px;
-  background-color: aquamarine;
   font-size: 18px;
+  background-size: contain;
+  background-repeat: no-repeat;
+
 }
 .message{
   display: flex;
@@ -122,23 +126,35 @@
 .attackButton{
   box-sizing: border-box;
   margin: 10%;
-  height: auto;
+  margin-bottom: 40%;
+  height: 80px;
   width: auto;
   background-color: pink;
   text-align: center;
+  justify-content: center;
+  border-radius: 20%;
+  font-size: 50px;
 }
 .escapeButton{
   box-sizing: border-box;
   margin: 10%;
-  height: auto;
+  margin-top: 40%;
+  height: 80px;
   width: auto;
   background-color: blue;
   text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20%;
+  font-size: 50px;
+
 }
 .actions{
   display: flex;
   flex-direction: column;
   justify-content: center;
+  box-sizing: border-box;
+  border: 2px solid black;
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 2;
@@ -151,7 +167,10 @@
 .inventory{
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
+  box-sizing: border-box;
+  border: 2px solid black;
   grid-column-start: 5;
   grid-column-end: 6;
   grid-row-start: 2;
@@ -159,13 +178,16 @@
   height: 100%;
   width: 100%;
 }
+.inventory > h3{
+  font-size: 35px;
+}
 .healthPotion{
   box-sizing: border-box;
   margin: 10%;
-  height: auto;
-  width: auto;
-  background-color: red;
-  text-align: center;
+  height: 100px;
+  width: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 /*Bottom Row*/
@@ -173,8 +195,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  grid-column-start: 1;
-  grid-column-end: 6;
+  box-sizing: border-box;
+  border: 2px solid black;
+  grid-column-start: 2;
+  grid-column-end: 5;
   grid-row-start: 3;
   grid-row-end:3;
   height: 100%;
@@ -182,25 +206,30 @@
 }
 .playerStats{
   box-sizing: border-box;
-  margin-left: 20%;
+  border: 2px solid black;
+  margin: auto;
   height: auto;
   width: auto;
-  background-color: green;
+  /* background-color: green; */
   text-align: center;
 }
 .portrait{
   box-sizing: border-box;
   margin: auto;
-  height: 100px;
-  width: 100px;
-  background-color: red;
+  height: 75px;
+  width: 75px;
+  /* background-color: red; */
+  background-size: contain;
+  background-repeat: no-repeat;
   text-align: center;
 }
 .playerWeapon{
   box-sizing: border-box;
-  margin-right: 20%;
+  margin: auto;
+  box-sizing: border-box;
+  border: 2px solid black;
   height: auto;
   width: auto;
-  background-color: blue;
+  /* background-color: blue; */
   text-align: center;
 }
