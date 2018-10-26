@@ -5,7 +5,7 @@
 }
 .field{
   display: grid;
-  
+
   grid-template-columns:  10%  auto  40%  auto  10%;
   grid-template-rows: 20% auto 20%;
   box-sizing: border-box;
@@ -82,25 +82,25 @@
 }
 
 #knight:hover {
-  max-height: 100px;
-  max-width: 100px;
+  height: 100px;
+  width: 100px;
 }
 
 #rogue:hover {
-  max-height: 100px;
-  max-width: 100px;
+  height: 100px;
+  width: 100px;
 }
 #priest:hover {
-  max-height: 100px;
-  max-width: 100px;
+  height: 100px;
+  width: 100px;
 }
 #ninja:hover {
-  max-height: 100px;
-  max-width: 100px;
+  height: 100px;
+  width: 100px;
 }
 #gambler:hover {
-  max-height: 100px;
-  max-width: 100px;
+  height: 100px;
+  width: 100px;
 }
 .floorSign{
   display: flex;
@@ -279,7 +279,6 @@
   line-height: 1;
 }
 .portrait{
-  box-sizing: border-box;
   margin: auto;
   height: 75px;
   width: 75px;

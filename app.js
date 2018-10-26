@@ -22,7 +22,6 @@ let lootDropped = false;
 
 // TODO: Animations
 // TODO: Make it responsive
-// TODO: Loot screen
 
 
 
