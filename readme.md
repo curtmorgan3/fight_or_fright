@@ -54,11 +54,11 @@ When the player loses all health, the game is over.
 # Functional Specifications
 
 The user enters a name and is presented with a choice of characters, each with certain stat advantages.
-  1. Knight: Higher Strength
-  2. Rogue: Higher Speed
-  3. Ninja: Higher Dexterity
-  4. Priest: Higher Fortitude
-  5. Gambler: Higher Luck
+  1. Knight: +2 Strength -2 Speed
+  2. Rogue: +2 Speed -2 Dexterity
+  3. Ninja: +2 Dexterity -2 Fortitude
+  4. Priest: +2 Fortitude -2 Strength
+  5. Gambler: +4 Luck
 
 The user is given a choice to enter the room (next level) or to rest (restore all health).
 
