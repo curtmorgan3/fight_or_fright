@@ -14,7 +14,12 @@ let characterCostume;
 let playerName = '';
 let canLevelUp = 0;
 
-// TODO:
+// TODO: Escape functionality
+// TODO: User feedback
+    //Append new div to each sprite, invisible. on checkDamage, update innerhtml
+// TODO: Animations
+
+
 
 
 //************** Game Logic *****************************
@@ -156,8 +161,6 @@ function endFloor(){
 
 }
 
-
-
 function gameOver(){
   clearScreen();
   monsters = [];
@@ -183,7 +186,15 @@ function gameOver(){
   `
   background.appendChild(gameOver);
   let button = document.getElementById('playAgain');
-  button.addEventListener('click', gameStart);
+  button.addEventListener('click', startOver);
+
+  function startOver(){
+    let field = document.querySelector('.field');
+    while(field.firstChild){
+      field.removeChild(field.firstChild)
+    };
+    gameStart();
+  }
 
 }
 
@@ -298,7 +309,10 @@ function renderFloor(){
     mon.className = 'sprite';
     mon.style.backgroundImage = `url(images/${name}.png)`;
     mon.id = monsters[i].id;
+    let feedback = document.createElement('div');
+    feedback.className = 'feedback';
     // mon.innerText = monsters[i].name;
+    mon.appendChild(feedback);
     background.appendChild(mon);
   }
 }
@@ -365,11 +379,13 @@ function renderEnter(){
   floorSign.className = 'floorSign';
   floorSign.innerHTML = `
     <h2>Prepare for horror!</h2> </br>
-    <h2>Floor: ${floorCount}</h2> <button id ='beginFloor'</button>Enter...</br>
+
     <h3>${playerName}, ${characterCostume}, Level: ${player.level} <br>
         Strength: ${player.str} / Speed: ${player.speed} / Dexterity: ${player.dex} <br>
         Fortitude: ${player.fort} / Luck: ${player.luck} / Max Health: ${player.maxHP} <br>
         Weapon: ${player.weaponName} / Quality: ${player.weaponQual} / Damage: 1- ${player.weapon}</h3>
+    <h2>Floor: ${floorCount}</h2> <button id ='beginFloor'</button>Enter...</br>
+
   `
   background.appendChild(floorSign);
   let button = document.getElementById('beginFloor');
@@ -431,7 +447,7 @@ function clearScreen(){
 
   for(i = 0; i < all.length; i++){
     let section = all[i];
-    console.log(section);
+    // console.log(section);
     while(section.firstChild){
       section.removeChild(section.firstChild);
     }
@@ -613,35 +629,98 @@ function selectTarget(){
 //Attack part one
 function attack(off, deff){
   let attack = randNum(20) + getMod(off.dex);
-
   if ( (off === player) && (orderOfAttack.length > 1) ){
-    console.log('off is player and OOA >1');
     if (attack >= deff.ac){
-      calcDam(off, deff);
-      beginTurn();
+      let id = deff.id;
+      let sprites = document.querySelectorAll('.sprite');
+      for(i = 0; i<sprites.length; i++){
+        let sprite = sprites[i];
+        let spriteId = parseInt(sprite.id)
+        if(spriteId === id){
+          let feedback = sprite.firstChild;
+          feedback.innerText = `${off.name} hits ${deff.name}!`
+          setTimeout(function() {feedback.innerText = ``}, 1500)
+        }
+      }
+      setTimeout(calc, 3000);
+      function calc(){
+        calcDam(off,deff);
+        beginTurn();
+      }
     }else{
-      console.log("miss");
-      beginTurn();
+      let id = deff.id;
+      let sprites = document.querySelectorAll('.sprite');
+      for(i = 0; i<sprites.length; i++){
+        let sprite = sprites[i];
+        let spriteId = parseInt(sprite.id)
+        if(spriteId === id){
+          let feedback = sprite.firstChild;
+          feedback.innerText = `${off.name} misses ${deff.name}!`
+          setTimeout(function() {feedback.innerText = ``}, 1500)
+        }
+      }
+      setTimeout(beginTurn, 3000);
     }
   }else if (orderOfAttack.length <= 1){
-    console.log('OOA <=1');
     return endFloor();
   }else {
-    console.log('off is monster');
+    //Monster Attacks
     if (attack >= deff.ac){
-      calcDam(off, deff);
+      let id = off.id;
+      let sprites = document.querySelectorAll('.sprite');
+      for(i = 0; i<sprites.length; i++){
+        let sprite = sprites[i];
+        let spriteId = parseInt(sprite.id)
+        if(spriteId === id){
+          let feedback = sprite.firstChild;
+          feedback.innerText = `${off.name} hits ${player.name}!`
+          console.log(feedback.innerText);
+          setTimeout(function() {feedback.innerText = ``}, 1500)
+        }
+      }
+      setTimeout(calcDam(off, deff), 3000);
     }else{
-      console.log("miss");
+      let id = off.id;
+      let sprites = document.querySelectorAll('.sprite');
+      for(i = 0; i<sprites.length; i++){
+        let sprite = sprites[i];
+        let spriteId = parseInt(sprite.id)
+        if(spriteId === id){
+          let feedback = sprite.firstChild;
+          feedback.innerText = `${off.name} misses ${player.name}!`
+          setTimeout(function() {feedback.innerText = ``}, 1500)
+        }
+      }
     }
   }
 };
 //Attack part two
 function calcDam(off, deff){
+  console.log('calc dam');
   let damage = randNum(off.weapon) + getMod(off.str);
   if (damage > 0){
     deff.hp -= damage;
-    clearScreen();
-    renderAll();
+    // if(off !== player){
+      let id = off.id;
+      let sprites = document.querySelectorAll('.sprite');
+      for(i = 0; i<sprites.length; i++){
+        let sprite = sprites[i];
+        let spriteId = parseInt(sprite.id)
+        if(spriteId === id){
+          let feedback = sprite.firstChild;
+          feedback.innerText = `${off.name} hits ${deff.name}!`
+          setTimeout(function() {feedback.innerText = `${damage} damage! ${deff.hp} HP remaining`}, 2000);
+          console.log(feedback.innerText);
+          setTimeout(function() {feedback.innerText = ``}, 4000)
+          setTimeout(clean, 5000);
+        }
+      }
+    // }
+    function clean(){
+      clearScreen();
+      renderAll();
+    }
+
   }else{
     damage = 0;
   }
@@ -853,7 +932,7 @@ function usePotion(){
     console.log('You have no potions!');
   }
 }
-// Escpae
+// Escape
 function escape(){
 
 }
