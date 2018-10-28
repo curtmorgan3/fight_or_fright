@@ -6,6 +6,7 @@ let orderFirst=[];
 let orderLast=[];
 let playerWent = false;
 let playerAlive = true;
+let floorCleared = false;
 let newFloor = true;
 let floorCount = 1;
 let killCount = 0;
@@ -50,7 +51,9 @@ function populateFloor(){
   escaping = false;
   determineOrder();
   renderAll();
-  beginTurn();
+  floorCleared = false;
+  // setTimeout(beginTurn, 2000);
+  attackTimer();
 }
 
 function beginTurn(){
@@ -66,6 +69,7 @@ function beginTurn(){
     newFloor = false;
   }
 
+if((playerAlive) && (floorCleared === false)){
   // Now the attacks should go orderFirst, player, orderLast
   if(orderOfAttack.length > 1){
     if((playerFirst) && (!playerWent)){
@@ -104,6 +108,9 @@ function beginTurn(){
       }
     }
   }
+}else if(playerAlive && floorCleared){
+  console.log("turn not triggered");
+}
 };
 
 function splitOrder(){
@@ -139,7 +146,9 @@ function splitOrder(){
 }
 
 function endFloor(){
-
+  clearTimeout(attackTimer);
+  clearTimeout(cleanTimer);
+  floorCleard = true;
   orderOfAttack = [];
   dropLoot();
   clearScreen();
@@ -154,6 +163,8 @@ function endFloor(){
 }
 
 function gameOver(){
+  clearTimeout(attackTimer);
+  clearTimeout(cleanTimer);
   console.log('Game Over');
   clearScreen();
   monsters = [];
@@ -188,6 +199,7 @@ function gameOver(){
     };
     player = new Object();
     playerAlive = true;
+    floorCount = 1;
     gameStart();
   }
 
@@ -249,19 +261,19 @@ function renderWelcome(){
     switch(costume){
       case 'knight':
         description.innerText = `Knights are strong, but all that armor makes them slow! \n
-                                  +2 Strength, -2 Speed` ;
+                                  +4 Strength, -2 Speed` ;
       break;
       case 'rogue':
         description.innerText = `Rogues are sneaky, but aren't the best at hitting their targets. \n
-                                +2 Speed, -2 Dexterity`;
+                                +4 Speed, -2 Dexterity`;
       break;
       case 'priest':
         description.innerText = `Priests channel a lot of energy from...somewhere. \n
-                                +2 Fortitude, -2 Strength`;
+                                +4 Fortitude, -2 Strength`;
       break;
       case 'ninja':
         description.innerText = `Ninjas almost always hit their target, but they don't like to wear armor.\n
-                                +2 Dexterity, -2 Fortitude`;
+                                +4 Dexterity, -2 Fortitude`;
       break;
       case 'gambler':
         description.innerText = `Gamblers don't need anything but the favor of ol' Lady Luck. \n
@@ -580,10 +592,15 @@ function randNum(n){
 
 function setAtt(){
   let sum = 0;
-  for(i = 0; i<3; i++){
-    sum += randNum(19);
+  let score = 0;
+  for(i = 0; i<4; i++){
+    sum += Math.floor(randNum(5));
   }
-  return Math.floor( sum / 3 );
+  score =  Math.floor( sum / 4 );
+  if(score < 5){
+    score = 5;
+  }
+  return score;
 }
 
 function isPlayerFirst(){
@@ -642,7 +659,7 @@ function generateCharacter(costume){
   player.speed = setAtt();
   player.fort = setAtt();
   player.luck = setAtt();
-  player.maxHP = setAtt() + getMod(player.fort) + 30;
+  player.maxHP = setAtt() + getMod(player.fort) + 10;
   player.ac = getMod(player.speed) + 10;
   player.costume = costume;
   player.weapon = 6;
@@ -654,19 +671,19 @@ function generateCharacter(costume){
 
   switch(costume){
     case 'knight':
-      player.str += 2;
+      player.str += 4;
       player.speed -= 2;
     break;
     case 'rogue':
-      player.speed += 2;
+      player.speed += 4;
       player.dex -= 2;
     break;
     case 'ninja':
-      player.dex += 2;
+      player.dex += 4;
       player.fort -= 2;
     break;
     case 'priest':
-      player.fort += 2;
+      player.fort += 4;
       player.str -= 2;
     break;
     case 'gambler':
@@ -695,26 +712,27 @@ function generateMonster(specific){
   }
   if(coin > 1){
     monster.level = randNum(2) + player.level;
-  }else{
+  }else if(coin <= 1){
     monster.level = randNum(2) - player.level;
   }
   if(monster.level < 1){
     monster.level = 1;
   }
   monster.id = randNum(100000);
-  monster.hp = setAtt() - 5;
+  monster.hp = setAtt() - 5 + (getMod(monster.fort)) + (3 * monster.level);
   if(monster.hp < 2){
     monster.hp = 2;
   }
+  let diff = monster.level - player.level;
   monster.maxHP = monster.hp;
-  monster.str = setAtt() + (1.2 * monster.level);
-  monster.dex = setAtt() + (1.2 * monster.level);
-  monster.speed = setAtt() + (1.2 * monster.level);
-  monster.fort = setAtt() + (1.2 * monster.level);
-  monster.ac = getMod(monster.speed) + 10;
-  monster.weapon = (randNum(2) +1) + monster.level + getMod(monster.str);
+  monster.str = setAtt() + (1 * diff);
+  monster.dex = setAtt() + (1 * diff);
+  monster.speed = setAtt() + (1 * diff);
+  monster.fort = setAtt() + (1 * diff);
+  monster.ac = getMod(monster.speed) + 5;
+  monster.weapon = (randNum(2) +1) + (diff * 2) + getMod(monster.str);
   monster.name = type;
-  monster.init = 0 + getMod(monster.speed);
+  monster.init = getMod(monster.speed);
 
   switch(type){
     case 'skeleton':
@@ -737,6 +755,14 @@ function generateMonster(specific){
 
 
 //***************** Combat **********************************
+function attackTimer() {
+  setTimeout(beginTurn, 2000);
+}
+
+function cleanTimer(){
+  setTimeout(clean, 5000);
+}
+
 //Wire up sprites to their monster
 function selectTarget(){
   let attackButton = document.querySelector('.attackButton');
@@ -759,6 +785,7 @@ function selectTarget(){
   }
 }
 //Attack part one
+
 function attack(off, deff){
   let attack = randNum(20) + getMod(off.dex);
   if ( (off === player) && (orderOfAttack.length > 1) ){
@@ -775,7 +802,8 @@ function attack(off, deff){
         }
       }
       calcDam(off,deff);
-      setTimeout(beginTurn, 3000);
+      // setTimeout(beginTurn, 1000);
+      attackTimer();
 
     }else{
       let id = deff.id;
@@ -789,7 +817,8 @@ function attack(off, deff){
           setTimeout(function() {feedback.innerText = `${deff.hp} / ${deff.maxHP}`}, 1500)
         }
       }
-      setTimeout(beginTurn, 3000);
+      // setTimeout(beginTurn, 1000);
+      attackTimer();
     }
   }else if ((orderOfAttack.length <= 1) && (playerAlive)){
     return endFloor();
@@ -825,9 +854,15 @@ function attack(off, deff){
   }
 };
 //Attack part two
+
+function clean(){
+  clearScreen();
+  renderAll();
+}
+
 function calcDam(off, deff){
   let damage = randNum(off.weapon) + getMod(off.str);
-  if (damage === 0){
+  if (damage <= 1){
     damage = 1;
   }
   if (damage > 0){
@@ -847,14 +882,12 @@ function calcDam(off, deff){
           }
           if(player.hp >= 1 && !escaping){
             console.log('clean');
-            setTimeout(clean, 5000);
+            // setTimeout(clean, 5000);
+            cleanTimer();
+
+            }
           }
         }
-      }
-    function clean(){
-      clearScreen();
-      renderAll();
-    }
 
   }else{
     damage = 0;
@@ -892,6 +925,9 @@ function playerDies(){
 //Monster Dies part one
 function isKilled(char){
   let xp = (char.level * randNum(300) + (randNum(100) * getMod(player.luck)) );
+  if (xp < 1){
+    xp = 1;
+  }
   player.xp += xp;
   console.log('+'+xp+'XP');
   let id = char.id;
@@ -932,7 +968,7 @@ function checkXP(){
   let currentLevel = player.level;
   let nextLevel = currentLevel + 1;
 
-  let requiredXP = ( ( ( (nextLevel * nextLevel) + nextLevel) / 2) * 100) - (nextLevel * 100);
+  let requiredXP = ( ( ( (nextLevel * nextLevel) + nextLevel) / 2) * 200) - (nextLevel * 100);
 
   if (xp >= requiredXP){
     canLevelUp += 1;

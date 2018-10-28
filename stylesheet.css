@@ -145,6 +145,9 @@
   display: flex;
   flex-direction: column;
 }
+.sprite:hover {
+  cursor: pointer;
+}
 .spriteContainer{
   display: flex;
   flex-wrap: wrap;
