@@ -19,7 +19,6 @@ let lootDropped = false;
 
 
 // TODO: Balance
-
 // TODO: Animations
 // TODO: Make it responsive
 
