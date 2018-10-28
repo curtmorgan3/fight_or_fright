@@ -191,6 +191,9 @@
   background-color:#3E1C33;
   color: #F6921E;
 }
+.attackButton:hover {
+  cursor: pointer;
+}
 .escapeButton{
   box-sizing: border-box;
   margin: 10%;
@@ -206,6 +209,9 @@
   background-color:#3E1C33;
   color: #F6921E;
 
+}
+.escapeButton:hover{
+  cursor: pointer;
 }
 .actions{
   display: flex;
@@ -254,7 +260,9 @@
   background-size: contain;
   background-repeat: no-repeat;
 }
-
+.healthPotion:hover {
+  cursor: pointer;
+}
 /*Bottom Row*/
 .player{
   display: flex;
