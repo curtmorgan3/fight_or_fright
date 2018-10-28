@@ -1,29 +1,17 @@
-/* @media only screen and (max-width: 1000px){
-  .background{
-    background-image: url();
-    background-color: lightgrey;
-    width: auto;
-
-  }
-
-} */
 *{
   font-family: 'Amatic SC', cursive;
   font-size:25px;
-
 }
-
 .field{
   display: grid;
+
   grid-template-columns:  10%  auto  40%  auto  10%;
   grid-template-rows: 20% auto 20%;
   box-sizing: border-box;
   width: auto;
   height: auto;
-  max-height: auto;
-  max-width: auto;
+  max-height: 1080px;
   background-color: #140911;
-  
 
 }
 
@@ -42,7 +30,6 @@
   grid-row-end:2;
   height: 100px;
   width: 80%;
-  margin-top: auto;
   background-image: url(images/floor.jpg);
   background-repeat: repeat-x;
 }
@@ -57,10 +44,8 @@
   grid-column-end: 5;
   grid-row-start: 2;
   grid-row-end:3;
-  /* height: 100%;
-  width: 100%; */
-  min-height: 130%;
-  min-width:auto;
+  height: 100%;
+  width: 100%;
   background-size: cover;
   background-repeat: no-repeat;
   background-color:rgba(255,255,255,0.2);
@@ -82,10 +67,10 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  min-height:auto;
-  /* width: 850px; */
-  /* min-height: auto; */
-  min-width: auto;
+  height:575px;
+  width: 850px;
+  min-height: 100%;
+  min-width: 100%;
   color: #F6921E;
 }
 .description{
@@ -160,9 +145,6 @@
   display: flex;
   flex-direction: column;
 }
-.sprite:hover {
-  cursor: pointer;
-}
 .spriteContainer{
   display: flex;
   flex-wrap: wrap;
@@ -209,12 +191,6 @@
   background-color:#3E1C33;
   color: #F6921E;
 }
-.attackButton:hover {
-  cursor: pointer;
-}
-.escapeButton:hover {
-  cursor: pointer;
-}
 .escapeButton{
   box-sizing: border-box;
   margin: 10%;
@@ -243,7 +219,6 @@
   grid-row-end:3;
   height: 100%;
   width: 100%;
-  min-width: 100px;
   background-image: url(images/floor.jpg);
   background-repeat: repeat-y;
 }
@@ -262,10 +237,11 @@
   grid-row-end:3;
   height: 100%;
   width: 100%;
-  min-width: 100px;
   background-image: url(images/floor.jpg);
   background-repeat: repeat-y;
   color: #F6921E;
+
+
 }
 .inventory > h3{
   font-size: 35px;
@@ -278,9 +254,7 @@
   background-size: contain;
   background-repeat: no-repeat;
 }
-.healthPotion:hover {
-  cursor: pointer;
-}
+
 /*Bottom Row*/
 .player{
   display: flex;
@@ -295,7 +269,6 @@
   height: 100%;
   max-height: 150px;
   width: 100%;
-  min-width: 600px;
   background-color:#3E1C33;
   color: #F6921E;
 }
