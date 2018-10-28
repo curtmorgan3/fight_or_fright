@@ -155,6 +155,7 @@ function endFloor(){
 }
 
 function gameOver(){
+  console.log('Game Over');
   clearScreen();
   monsters = [];
   orderOfAttack = [];
@@ -226,7 +227,7 @@ function renderWelcome(){
   let welcome = document.createElement('div');
   welcome.className = 'welcome';
   welcome.innerHTML = `
-    <h2>Haunted House</h2> <br/>
+    <h2>Fight or Fright!</h2> <br/>
     <h3>Choose your character</h3>
   `
   background.appendChild(welcome)
@@ -509,28 +510,29 @@ function renderLootSign(){
 }
 
 function renderLevelUp(){
-  console.log('render level up');
-  clearScreen();
-  let background = document.createElement('div');
-  let floor = document.querySelector('.floor');
-  background.className = 'background';
-  floor.appendChild(background);
+  if(playerAlive){
+    console.log('render level up');
+    clearScreen();
+    let background = document.createElement('div');
+    let floor = document.querySelector('.floor');
+    background.className = 'background';
+    floor.appendChild(background);
 
 
-  //Level Up, pick attribute
-  let levelUpScreen = document.createElement('div');
-  levelUpScreen.class = 'message';
-  levelUpScreen.innerHTML = `
-    <h2>You leveled up!</h2> <h2>Level: ${player.level}<h2>
-    <h3>Choose an attribute to increase by 1 point. If you choose your class
-        attribute, it will increase by 2!</h3>
-    <button id = 'str'>Strength</button>
-    <button id ='speed'>Speed</button>
-    <button id ='dex'>Dexterity</button>
-    <button id ='fort'>Fortitude</button>
-    <button id ='luck'>Luck</button>
+    //Level Up, pick attribute
+    let levelUpScreen = document.createElement('div');
+    levelUpScreen.class = 'message';
+    levelUpScreen.innerHTML = `
+      <h2>You leveled up!</h2> <h2>Level: ${player.level}<h2>
+      <h3>Choose an attribute to increase by 1 point. If you choose your class
+          attribute, it will increase by 2!</h3>
+          <button id = 'str'>Strength</button>
+          <button id ='speed'>Speed</button>
+          <button id ='dex'>Dexterity</button>
+          <button id ='fort'>Fortitude</button>
+          <button id ='luck'>Luck</button>
 
-    `
+          `
     background.appendChild(levelUpScreen);
 
     let str = document.getElementById('str');
@@ -547,6 +549,7 @@ function renderLevelUp(){
     function chooseAtt(){
       levelUp(this.id);
     }
+  }
 }
 
 //Leaves all containers but empties them
@@ -789,7 +792,7 @@ function attack(off, deff){
       }
       setTimeout(beginTurn, 3000);
     }
-  }else if (orderOfAttack.length <= 1){
+  }else if ((orderOfAttack.length <= 1) && (playerAlive)){
     return endFloor();
   }else {
     //Monster Attacks
@@ -825,6 +828,9 @@ function attack(off, deff){
 //Attack part two
 function calcDam(off, deff){
   let damage = randNum(off.weapon) + getMod(off.str);
+  if (damage === 0){
+    damage = 1;
+  }
   if (damage > 0){
     deff.hp -= damage;
       let id = off.id;
@@ -860,7 +866,14 @@ function calcDam(off, deff){
 function isAlive(deff){
   let hp = deff.hp;
   let id = deff.id;
-  let isPlayer = deff === player? true : false;
+  let isPlayer;
+  if(deff === player){
+    isPlayer = true;
+  }else{
+    isPlayer = false;
+  }
+  console.log(isPlayer);
+  console.log(deff);
   if(hp < 1){
     if(isPlayer){
       return playerDies();
@@ -909,7 +922,6 @@ function isKilled(char){
         return endFloor();
       }
       killCount += 1;
-      // splitOrder();
       renderTurnOrder();
     }
   }
@@ -977,7 +989,7 @@ function levelUp(att){ //pass the skill point the user selects
 
   player.maxHP += randNum(6) + getMod(player.fort);
   player.ac = getMod(player.speed) + 10;
-  // player.level += 1;
+  player.hp = player.maxHP;
   if(canLevelUp > 0){
     renderLevelUp();
   }else {
@@ -1038,7 +1050,7 @@ function generateWeapon(type){
     //96-100
     case (num > 97 && num <= 100):
     case (num ==='awesome'):
-      lootWeapon.dam =  20;
+      lootWeapon.weapon =  20;
       lootWeapon.weaponQual = 'Awesome';
       lootWeapon.weaponName = 'Double Axe'
     break;
