@@ -163,7 +163,7 @@ function gameOver(){
   clearScreen();
   monsters = [];
   orderOfAttack = [];
-  floorCleared = true; 
+  floorCleared = true;
   let floor = document.querySelector('.floor')
   let background = document.createElement('div');
   background.className = 'background';
@@ -624,7 +624,7 @@ function isPlayerMiddle(){
 }
 //pass in character.attribute, which is a number value
 function getMod(char){
-  let mod = -5;
+  let mod = 0;
   for (i = 1; i<char; i+= 2){
     mod += 1;
   }
