@@ -185,7 +185,7 @@ generated in the same way the player's are.
 
 Code Snippets
 
-```` JavaScript ````
+``` JavaScript
 
 function generateCharacter(costume){
   //create a player object, add attributes
@@ -232,4 +232,4 @@ function generateCharacter(costume){
   };
   return player;
 }
-````
+```
