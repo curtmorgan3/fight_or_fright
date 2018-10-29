@@ -4,7 +4,7 @@ Wireframe:
   3. https://wireframe.cc/zHqdCd
 
 Deployment:
-  1. bent-taste.surge.sh
+  1. possible-guitar.surge.sh
 
 Known Issues:
   1. Sometimes a sprite will remain for one turn after its monster is destroyed
