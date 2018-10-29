@@ -32,11 +32,8 @@ function chooseCharacter(){
 }
 
 function populateFloor(){
-  let num = randNum(2) + randNum(player.level);
-  console.log('num: ' + num);
-  console.log("type: " + typeof (num));
-  for (let i=0; i < num; i++){
-    console.log('monster gen');
+  // let num = randNum(2) + randNum(player.level);
+  for (let i=0; i < player.level; i++){
     generateMonster();
   }
 
@@ -899,8 +896,6 @@ function isAlive(deff){
   }else{
     isPlayer = false;
   }
-  console.log(isPlayer);
-  console.log(deff);
   if(hp < 1){
     if(isPlayer){
       return playerDies();
