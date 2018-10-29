@@ -163,6 +163,7 @@ function gameOver(){
   clearScreen();
   monsters = [];
   orderOfAttack = [];
+  floorCleared = true; 
   let floor = document.querySelector('.floor')
   let background = document.createElement('div');
   background.className = 'background';
