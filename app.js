@@ -19,12 +19,6 @@ let lootWeapon = new Object();
 let lootDropped = false;
 
 
-// TODO: Balance
-// TODO: Animations
-// TODO: Make it responsive
-
-
-
 //************** Game Logic *****************************
 function gameStart(){
   renderStart();
@@ -968,7 +962,7 @@ function checkXP(){
   let currentLevel = player.level;
   let nextLevel = currentLevel + 1;
 
-  let requiredXP = ( ( ( (nextLevel * nextLevel) + nextLevel) / 2) * 200) - (nextLevel * 100);
+  let requiredXP = ( ( ( (nextLevel * nextLevel) + nextLevel) / 2) * 100) - (nextLevel * 100);
 
   if (xp >= requiredXP){
     canLevelUp += 1;

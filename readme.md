@@ -3,6 +3,18 @@ Wireframe:
   2. https://wireframe.cc/4Ja0ae
   3. https://wireframe.cc/zHqdCd
 
+Deployment:
+  1. bent-taste.surge.sh
+
+Known Issues:
+  1. Sometimes a sprite will remain for one turn after its monster is destroyed
+  2. Occasionally, after a player dies or clears a floor, the floor will render as if the battle continues
+
+Planned Implementations:
+  1. Add animations for attack sequences
+  2. Make randomly generated names for looted weapons
+  3. Make the site responsive and mobile friendly
+
 # Description
 
 The user plays a hero on Halloween that must travel through the infinite levels of a haunted house. He
@@ -49,15 +61,13 @@ When the player destroys all opponents, a new level is generated.
 
 When the player loses all health, the game is over.
 
-
-
 # Functional Specifications
 
 The user enters a name and is presented with a choice of characters, each with certain stat advantages.
-  1. Knight: +2 Strength -2 Speed
-  2. Rogue: +2 Speed -2 Dexterity
-  3. Ninja: +2 Dexterity -2 Fortitude
-  4. Priest: +2 Fortitude -2 Strength
+  1. Knight: +4 Strength -2 Speed
+  2. Rogue: +4 Speed -2 Dexterity
+  3. Ninja: +4 Dexterity -2 Fortitude
+  4. Priest: +4 Fortitude -2 Strength
   5. Gambler: +4 Luck
 
 The user is given a choice to enter the room (next level) or to rest (restore all health).
@@ -135,7 +145,7 @@ For example, to determine a players armor class, add 10 to his speed modifier. H
   2. That number is then added to the character's strength modifier.
 
 ### Health
-  1. A character's health is determined by summing three random numbers 1-4, plus fortitude modifier.
+  1. A character's health is determined by rolling a random number 1-20, plus fortitude modifier.
 
 ### Loot
   1. The player is presented with random loot after each floor is cleared. The chances of loot are:
@@ -155,28 +165,7 @@ For example, to determine a players armor class, add 10 to his speed modifier. H
 
   level = ((level ^2 + level) / 2) - (level *100)
 
-  |XP       | Level
-  |---------|:--------:
-  |0	      |  1
-  |300	    |  2
-  |900	    |  3
-  |2,700	  |  4
-  |6,500	  |  5
-  |14,000	  |  6
-  |23,000	  |  7
-  |34,000	  |  8
-  |48,000	  |  9
-  |64,000	  |  10
-  |85,000	  |  11
-  |100,000  |	 12
-  |120,000  |	 13
-  |140,000  |	 14
-  |165,000  |	 15
-  |195,000  |	 16
-  |225,000  |	 17
-  |265,000  |	 18
-  |305,000  |	 19
-  |355,000  |	 20
+
 
 ### Monsters
 The player is presented with a random combination of five possible monster types:
@@ -194,30 +183,53 @@ The player is presented with a random combination of five possible monster types
 Monsters are generated at 0-3 levels higher than the player, randomly. Their stats are
 generated in the same way the player's are.
 
+Code Snippets
 
-## Anticipated Functions
+```` JavaScript ````
 
-randNum(n)
+function generateCharacter(costume){
+  //create a player object, add attributes
 
-generateCharacter(x)
-  1. randNum(20)
-  1. x.strength = randNum + 2
-  1. ...
+  player.name = playerName;
+  player.level = 1;
+  player.xp = 0;
+  player.str = setAtt();
+  player.dex = setAtt();
+  player.speed = setAtt();
+  player.fort = setAtt();
+  player.luck = setAtt();
+  player.maxHP = setAtt() + getMod(player.fort) + 10;
+  player.ac = getMod(player.speed) + 10;
+  player.costume = costume;
+  player.weapon = 6;
+  player.weaponName = 'Wooden Sword';
+  player.hp = player.maxHP;
+  player.inventory = [];
+  player.init = 0 + getMod(player.speed);
+  player.weaponQual = 'Poor';
 
-attack(off, def)
-  1. randNum() + off.dexterity
-  1. check against def.armor
-  1. if hit, getDamage()
+  switch(costume){
+    case 'knight':
+      player.str += 4;
+      player.speed -= 2;
+    break;
+    case 'rogue':
+      player.speed += 4;
+      player.dex -= 2;
+    break;
+    case 'ninja':
+      player.dex += 4;
+      player.fort -= 2;
+    break;
+    case 'priest':
+      player.fort += 4;
+      player.str -= 2;
+    break;
+    case 'gambler':
+      player.luck += 4;
+    break;
 
-getDamage(off, def)
-  1. def.vitality -= (randNum(weapon) + off.strength)
-
-createFloor()
-  1. generateCharacter * randNum(player.level - 2 to player.level + 2)
-  1. let turnOrder = [all characters];
-  1. turnOrder.sort(by speed)
-
-keepWeapon()
-
-
-if player rolls a one, chance of weapon breaking
+  };
+  return player;
+}
+````
