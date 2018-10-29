@@ -624,7 +624,7 @@ function isPlayerMiddle(){
 }
 //pass in character.attribute, which is a number value
 function getMod(char){
-  let mod = 0;
+  let mod = -5;
   for (i = 1; i<char; i+= 2){
     mod += 1;
   }
